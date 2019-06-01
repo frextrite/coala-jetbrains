@@ -7,18 +7,26 @@ public class CodeAnalysisIssue {
     private final String message;
     private final List<SourceRange> affectedCodeRange;
     private final IssueSeverity severity;
-    private final String debugMessage;
-    private final String additionalInformation;
 
-    private enum IssueSeverity {INFO, WARNING, ERROR};
+    private enum IssueSeverity {INFO, WARNING, ERROR}
 
-    public CodeAnalysisIssue(String origin, String message, List<SourceRange> affectedCodeRange, IssueSeverity severity, String debugMessage, String additionalInformation) {
+    public CodeAnalysisIssue(String origin, String message, List<SourceRange> affectedCodeRange, int severity) {
         this.origin = origin;
         this.message = message;
         this.affectedCodeRange = affectedCodeRange;
-        this.severity = severity;
-        this.debugMessage = debugMessage;
-        this.additionalInformation = additionalInformation;
+        this.severity = getSeverityFromInteger(severity);
     }
+
+    private IssueSeverity getSeverityFromInteger(int severity) {
+        return IssueSeverity.values()[severity];
+    }
+
+    public String getOrigin() { return origin; }
+
+    public String getMessage() { return message; }
+
+    public List<SourceRange> getAffectedCodeRange() { return affectedCodeRange; }
+
+    public IssueSeverity getSeverity() { return severity; }
 
 }

@@ -5,15 +5,15 @@ import java.util.List;
 public class CodeAnalysisIssue {
     private final String origin;
     private final String message;
-    private final List<SourceRange> affectedCodeRange;
+    private final List<AffectedCode> affectedCodeList;
     private final IssueSeverity severity;
 
     private enum IssueSeverity {INFO, WARNING, ERROR}
 
-    public CodeAnalysisIssue(String origin, String message, List<SourceRange> affectedCodeRange, int severity) {
+    public CodeAnalysisIssue(String origin, String message, List<AffectedCode> affectedCodeList, int severity) {
         this.origin = origin;
         this.message = message;
-        this.affectedCodeRange = affectedCodeRange;
+        this.affectedCodeList = affectedCodeList;
         this.severity = getSeverityFromInteger(severity);
     }
 
@@ -25,7 +25,7 @@ public class CodeAnalysisIssue {
 
     public String getMessage() { return message; }
 
-    public List<SourceRange> getAffectedCodeRange() { return affectedCodeRange; }
+    public List<AffectedCode> getAffectedCodeList() { return affectedCodeList; }
 
     public IssueSeverity getSeverity() { return severity; }
 

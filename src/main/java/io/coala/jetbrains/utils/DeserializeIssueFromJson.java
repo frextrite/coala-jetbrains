@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeserializeIssueFromJson implements JsonDeserializer {
+public class DeserializeIssueFromJson implements JsonDeserializer<CodeAnalysisIssue> {
 
     @Override
     public CodeAnalysisIssue deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {

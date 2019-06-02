@@ -4,9 +4,9 @@ import gherkin.deps.com.google.gson.*;
 
 import java.lang.reflect.Type;
 
-public class DeserializeSourceRangeFromJson implements JsonDeserializer {
+public class DeserializeSourceRangeFromJson implements JsonDeserializer<SourceRange> {
     @Override
-    public Object deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+    public SourceRange deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         final JsonObject jsonObject = jsonElement.getAsJsonObject();
         final String fileName = jsonObject.get("file").getAsString();
         final int line = jsonObject.get("line").getAsInt();

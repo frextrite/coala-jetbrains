@@ -8,7 +8,7 @@ public class CodeAnalysisIssue {
     private final List<AffectedCode> affectedCodeList;
     private final IssueSeverity severity;
 
-    private enum IssueSeverity {INFO, WARNING, ERROR}
+    public enum IssueSeverity {INFO, WARNING, ERROR}
 
     public CodeAnalysisIssue(String origin, String message, List<AffectedCode> affectedCodeList, int severity) {
         this.origin = origin;

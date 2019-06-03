@@ -1,5 +1,6 @@
 package io.coala.jetbrains.utils;
 
+import io.coala.jetbrains.utils.deserializers.CodeAnalysisIssueDeserializer;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

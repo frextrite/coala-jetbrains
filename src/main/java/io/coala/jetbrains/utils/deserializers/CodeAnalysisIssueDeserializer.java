@@ -1,7 +1,8 @@
-package io.coala.jetbrains.utils;
+package io.coala.jetbrains.utils.deserializers;
 
 import gherkin.deps.com.google.gson.*;
 import gherkin.deps.com.google.gson.reflect.TypeToken;
+import io.coala.jetbrains.utils.CodeAnalysisIssue;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

@@ -1,6 +1,7 @@
-package io.coala.jetbrains.utils;
+package io.coala.jetbrains.utils.deserializers;
 
 import gherkin.deps.com.google.gson.*;
+import io.coala.jetbrains.utils.SourceRange;
 
 import java.lang.reflect.Type;
 

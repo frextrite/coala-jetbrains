@@ -1,0 +1,66 @@
+{
+  "results": {
+    "cli": [
+      {
+        "additional_info": "",
+        "affected_code": [
+          {
+            "end": {
+              "column": 1,
+              "file": "some_file.ext",
+              "line": 2
+            },
+            "file": "some_file.ext",
+            "start": {
+              "column": 1,
+              "file": "some_file.ext",
+              "line": 2
+            }
+          }
+        ],
+        "aspect": "NoneType",
+        "confidence": 100,
+        "debug_msg": "",
+        "diffs": null,
+        "id": 313564787803406944481354573307533766874,
+        "message": "W191 indentation contains tabs",
+        "message_arguments": {},
+        "message_base": "W191 indentation contains tabs",
+        "origin": "PycodestyleBear (W191)",
+        "severity": 1
+      }
+    ],
+    "other": [
+      {
+        "additional_info": "",
+        "affected_code": [
+          {
+            "end": {
+              "column": 2,
+              "file": "some_file.ext",
+              "line": 21
+            },
+            "file": "some_file.ext",
+            "start": {
+              "column": 2,
+              "file": "some_file.ext",
+              "line": 21
+            }
+          }
+        ],
+        "aspect": "NoneType",
+        "confidence": 100,
+        "debug_msg": "",
+        "diffs": {
+          "some_file.ext": "--- \n+++ \n@@ -18,4 +18,4 @@\n \t\t# assert resp.status_code == 200\n \t\ti = 1\n \t\tprint ('You are not connected to the internet.'\n-                if isinstance(i, int) else True)\n+\t\t\t\tif isinstance(i, int) else True)\n"
+        },
+        "id": 137067615497702293416585780723795864157,
+        "message": "Line contains following spacing inconsistencies:\n- Spaces used instead of tabs.",
+        "message_arguments": {},
+        "message_base": "Line contains following spacing inconsistencies:\n- Spaces used instead of tabs.",
+        "origin": "SpaceConsistencyBear",
+        "severity": 1
+      }
+    ]
+  }
+}

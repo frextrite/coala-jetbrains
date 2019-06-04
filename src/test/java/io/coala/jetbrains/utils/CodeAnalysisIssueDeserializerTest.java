@@ -30,11 +30,22 @@ public class CodeAnalysisIssueDeserializerTest {
     }
 
     @Test
-    public void testObjectProperties() {
+    public void testSourceRangeProperties() {
         assertThat(codeAnalysisIssueList.get(0).getAffectedCodeList().get(0).getStartSourceRange())
-                .isEqualToComparingFieldByField(new SourceRange("some_file.ext", 2, 1));
+                .isEqualToComparingFieldByField(new SourceRange("some_file.ext", 2, -1));
         assertThat(codeAnalysisIssueList.get(0).getAffectedCodeList().get(0).getEndSourceRange())
-                .isEqualToComparingFieldByField(new SourceRange("some_file.ext", 2, 1));
+                .isEqualToComparingFieldByField(new SourceRange("some_file.ext", 2, -1));
+    }
+
+    @Test
+    public void testAffectedCodeProperties() {
+        final SourceRange sourceRange = new SourceRange("some_file.ext", 2, -1);
+        assertThat(codeAnalysisIssueList.get(0).getAffectedCodeList().get(0)).isEqualToComparingFieldByFieldRecursively(new AffectedCode("some_file.ext", sourceRange, sourceRange));
+    }
+
+    @Test
+    public void testCodeAnalysisIssueProperties() {
+        assertThat(codeAnalysisIssueList.get(0).getMessage()).isNotEmpty().isEqualTo("W191 indentation contains tabs");
         assertThat(codeAnalysisIssueList.get(0).getSeverity()).isEqualByComparingTo(CodeAnalysisIssue.IssueSeverity.WARNING);
         assertThat(codeAnalysisIssueList.get(0).getOrigin()).isNotEmpty().isEqualTo("PycodestyleBear (W191)");
         assertThat(codeAnalysisIssueList.get(1)).isEqualToIgnoringNullFields(new CodeAnalysisIssue("SpaceConsistencyBear", "Line contains following spacing inconsistencies:\n- Spaces used instead of tabs.", null, 1));

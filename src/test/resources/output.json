@@ -6,13 +6,13 @@
         "affected_code": [
           {
             "end": {
-              "column": 1,
+              "column": null,
               "file": "some_file.ext",
               "line": 2
             },
             "file": "some_file.ext",
             "start": {
-              "column": 1,
+              "column": null,
               "file": "some_file.ext",
               "line": 2
             }

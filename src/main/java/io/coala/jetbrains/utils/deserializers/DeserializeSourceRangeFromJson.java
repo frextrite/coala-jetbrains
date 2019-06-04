@@ -11,7 +11,8 @@ public class DeserializeSourceRangeFromJson implements JsonDeserializer<SourceRa
         final JsonObject jsonObject = jsonElement.getAsJsonObject();
         final String fileName = jsonObject.get("file").getAsString();
         final int line = jsonObject.get("line").getAsInt();
-        final int column = jsonObject.get("column").getAsInt();
+        final JsonElement jsonElementColumn = jsonObject.get("column");
+        final int column = jsonElementColumn instanceof JsonNull ? -1 : jsonElementColumn.getAsInt();
 
         return new SourceRange(fileName, line, column);
     }

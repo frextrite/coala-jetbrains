@@ -18,13 +18,19 @@
     </extensions>
 
     <actions>
+        <!-- create a new coala group -->
+        <group id="CodeAnalysis.AnalyzeMenu"
+               text="coala">
+            <add-to-group group-id="AnalyzeMenu" anchor="last"/>
+            <separator/>
+        </group>
         <!-- Add your actions here -->
         <action id="io.coala.jetbrains.CodeAnalysisAction"
                 class="io.coala.jetbrains.CodeAnalysisAction"
                 text="Analyze with coala"
                 description="Run coala on current file">
-            <add-to-group group-id="EditorPopupMenu" anchor="last" />
-            <add-to-group group-id="AnalyzeMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="CodeAnalysis.AnalyzeMenu" anchor="last"/>
         </action>
     </actions>
 </idea-plugin>

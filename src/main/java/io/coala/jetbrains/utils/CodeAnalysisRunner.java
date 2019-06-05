@@ -1,10 +1,31 @@
 package io.coala.jetbrains.utils;
 
+import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
+import com.intellij.execution.process.OSProcessHandler;
 
 import javax.annotation.Nonnull;
 
 public class CodeAnalysisRunner {
+    /**
+     * This method creates a runnable process and runs it.
+     * {@link OSProcessHandler#startNotify()} is used to capture the output
+     *
+     * @param cwd the current working directory for coala
+     * @param executable the path to coala executable
+     * @param section the coala section tag to run analysis on
+     * @throws ExecutionException
+     */
+    public static void submit(@Nonnull String cwd, @Nonnull String executable, @Nonnull String section) throws ExecutionException {
+        final GeneralCommandLine commandLine = getNewGeneralCommandLine(cwd, executable, section);
+        final String commandLineString = commandLine.getCommandLineString();
+        final Process process = commandLine.createProcess();
+
+        final OSProcessHandler processHandler = new OSProcessHandler(process, commandLineString);
+
+        processHandler.startNotify();
+    }
+
     /**
      * This method creates a new instance of GeneralCommandLine
      * and sets its configurations according to the input params provided

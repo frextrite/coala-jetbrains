@@ -1,0 +1,25 @@
+[java]
+tags = jetbrains
+bears = ArtisticStyleBear, CheckstyleBear, coalaBear, CPDBear, JavaPMDBear
+files = **.java
+language = Java
+checkstyle_configs = google
+use_spaces = true
+indent_size = 4
+
+[java.misc]
+bears = DuplicateFileBear, FilenameBear, SpaceConsistencyBear, LineLengthBear
+file_naming_convention = pascal
+max_line_length = 120
+
+[java.network]
+enable = 0
+bears = HTTPSBear, InvalidLinkBear
+
+[java.documentation]
+enable = 0
+bears = DocGrammarBear
+
+[java.license]
+enable = 0
+bears = LicenseCheckBear, LicenseHeaderBear

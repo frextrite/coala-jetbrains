@@ -1,4 +1,5 @@
 [all]
+enabled = false
 tags = jetbrains
 bears = DuplicateFileBear, SpaceConsistencyBear
 files = **
@@ -6,7 +7,6 @@ ignore = .**
 use_spaces = true
 
 [all.network]
-enable = false
 bears = HTTPSBear, InvalidLinkBear
 
 [java]
@@ -23,9 +23,9 @@ file_naming_convention = pascal
 max_line_length = 120
 
 [java.documentation]
-enable = false
+enabled = false
 bears = DocGrammarBear
 
 [java.license]
-enable = false
+enabled = false
 bears = LicenseCheckBear, LicenseHeaderBear

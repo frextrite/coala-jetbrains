@@ -33,4 +33,10 @@
             <add-to-group group-id="CodeAnalysis.AnalyzeMenu" anchor="last"/>
         </action>
     </actions>
+
+    <project-components>
+        <component>
+            <implementation-class>io.coala.jetbrains.analysis.CodeAnalysisRunner</implementation-class>
+        </component>
+    </project-components>
 </idea-plugin>

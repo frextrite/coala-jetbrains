@@ -1,6 +1,7 @@
 package io.coala.jetbrains.utils;
 
 import com.intellij.execution.configurations.GeneralCommandLine;
+import io.coala.jetbrains.analysis.CodeAnalysisRunner;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

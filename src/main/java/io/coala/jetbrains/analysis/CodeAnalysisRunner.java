@@ -7,31 +7,32 @@ import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import io.coala.jetbrains.settings.ProjectSettings;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class CodeAnalysisRunner implements ProjectComponent {
-    private static final long timeOutInMilliseconds = TimeUnit.SECONDS.toMillis(30);
+    private static final long timeOutInMilliseconds = TimeUnit.SECONDS.toMillis(120);
     private static Logger LOGGER = Logger.getInstance(CodeAnalysisRunner.class);
+    private final ProjectSettings projectSettings;
     private final Project project;
 
-    public CodeAnalysisRunner(Project project) {
+    public CodeAnalysisRunner(Project project, ProjectSettings projectSettings) {
         this.project = project;
+        this.projectSettings = projectSettings;
     }
 
     /**
      * This method creates a runnable process and runs it.
      * {@link OSProcessHandler#startNotify()} is used to capture the output
      *
-     * @param cwd the current working directory for coala
-     * @param executable the path to coala executable
-     * @param section the coala section tag to run analysis on
      * @return the instance with all the required information about the run
      * @throws ExecutionException
      */
-    public ProcessOutput analyze(@NotNull String cwd, @NotNull String executable, @NotNull String section) throws ExecutionException {
-        final GeneralCommandLine commandLine = getNewGeneralCommandLine(cwd, executable, section);
+    public ProcessOutput analyze() throws ExecutionException {
+        final GeneralCommandLine commandLine = getNewGeneralCommandLine();
 
         final String commandLineString = commandLine.getCommandLineString();
         final Process process = commandLine.createProcess();
@@ -45,6 +46,9 @@ public class CodeAnalysisRunner implements ProjectComponent {
         processHandler.startNotify();
 
         holdAndWaitProcess(processHandler, processOutput);
+
+        final String stdout = processOutput.getStdout();
+        LOGGER.warn(stdout);
 
         LOGGER.info("Finished running coala.");
 
@@ -63,18 +67,24 @@ public class CodeAnalysisRunner implements ProjectComponent {
      * --json specifies the output should be in JSON format
      * --log-json specifies the logging statements must be in JSON as well
      *
-     * @param cwd the current working directory for coala
-     * @param executable the path to coala executable
-     * @param section the coala section tag to run analysis on
      * @return an instance of GeneralCommandLine
      */
-    public static GeneralCommandLine getNewGeneralCommandLine(@NotNull String cwd, @NotNull String executable, @NotNull String section) {
+    public GeneralCommandLine getNewGeneralCommandLine() {
+        final String cwd = projectSettings.getCwd();
+        final String executable = projectSettings.getExecutable();
+        final List<String> sections = projectSettings.getSections();
+
         final GeneralCommandLine commandLine = new GeneralCommandLine();
         commandLine.setWorkDirectory(cwd);
         commandLine.setExePath(executable);
-        commandLine.addParameters("--filter-by", "section_tags", section);
         commandLine.addParameter("--json");
         commandLine.addParameter("--log-json");
+
+        commandLine.addParameters("--filter-by", "section_tags");
+        for(String section : sections) {
+            commandLine.addParameters(section);
+        }
+
         return commandLine;
     }
 

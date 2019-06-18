@@ -38,5 +38,11 @@
         <component>
             <implementation-class>io.coala.jetbrains.analysis.CodeAnalysisRunner</implementation-class>
         </component>
+        <component>
+            <implementation-class>io.coala.jetbrains.analysis.CodeAnalysisExecutor</implementation-class>
+        </component>
+        <component>
+            <implementation-class>io.coala.jetbrains.settings.ProjectSettings</implementation-class>
+        </component>
     </project-components>
 </idea-plugin>

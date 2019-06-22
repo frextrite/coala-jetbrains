@@ -8,6 +8,7 @@ import java.util.List;
 
 public class ProjectSettings implements ProjectComponent {
     private final Project project;
+    private long timeOutInSeconds;
     private String cwd;
     private String executable;
     private List<String> sections;
@@ -20,10 +21,17 @@ public class ProjectSettings implements ProjectComponent {
          */
         this.executable = null;
         this.sections = new ArrayList<>();
+        /* TODO: add timeout option in settings panel
+         */
+        this.timeOutInSeconds = 120;
     }
 
     public Project getProject() {
         return project;
+    }
+
+    public long getTimeOutInSeconds() {
+        return timeOutInSeconds;
     }
 
     public String getCwd() {
@@ -36,6 +44,10 @@ public class ProjectSettings implements ProjectComponent {
 
     public List<String> getSections() {
         return sections;
+    }
+
+    public void setTimeOutInSeconds(long timeOutInSeconds) {
+        this.timeOutInSeconds = timeOutInSeconds;
     }
 
     public void setExecutable(String executable) {

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class CodeAnalysisRunner implements ProjectComponent {
-    private static final long timeOutInMilliseconds = TimeUnit.SECONDS.toMillis(120);
     private static Logger LOGGER = Logger.getInstance(CodeAnalysisRunner.class);
     private final ProjectSettings projectSettings;
     private final Project project;
@@ -33,22 +32,15 @@ public class CodeAnalysisRunner implements ProjectComponent {
      */
     public ProcessOutput analyze() throws ExecutionException {
         final GeneralCommandLine commandLine = getNewGeneralCommandLine();
-
         final String commandLineString = commandLine.getCommandLineString();
         final Process process = commandLine.createProcess();
+        final OSProcessHandler processHandler = new OSProcessHandler(process, commandLineString);
+        final ProcessOutput processOutput = getProcessOutputWithTextAvailableListener(processHandler);
 
         LOGGER.info("Running coala command " + commandLineString);
 
-        final OSProcessHandler processHandler = new OSProcessHandler(process, commandLineString);
-
-        ProcessOutput processOutput = getProcessOutputWithTextAvailableListener(processHandler);
-
         processHandler.startNotify();
-
         holdAndWaitProcess(processHandler, processOutput);
-
-        final String stdout = processOutput.getStdout();
-        LOGGER.warn(stdout);
 
         LOGGER.info("Finished running coala.");
 
@@ -96,6 +88,8 @@ public class CodeAnalysisRunner implements ProjectComponent {
      * @param processOutput the instance to set appropriate flags
      */
     private void holdAndWaitProcess(@NotNull OSProcessHandler processHandler, @NotNull ProcessOutput processOutput) {
+        final long timeOutInMilliseconds = TimeUnit.SECONDS.toMillis(projectSettings.getTimeOutInSeconds());
+
         if(processHandler.waitFor(timeOutInMilliseconds)) {
             LOGGER.info("Process exited with exit code " + processHandler.getExitCode());
             processOutput.setExitCode(processHandler.getExitCode());

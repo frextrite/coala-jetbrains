@@ -42,19 +42,19 @@ public class ProjectSettings implements ProjectComponent {
         this.executable = executable;
     }
 
-    public void addSections(List<String> sections) {
-        this.sections.addAll(sections);
+    public void addSectionsToFilter(List<String> sectionsList) {
+        this.sections.addAll(sectionsList);
     }
 
-    public void addSection(String section) {
+    public void addSectionToFilter(String section) {
         this.sections.add(section);
     }
 
-    public void removeSections(List<String> sections) {
-        this.sections.removeAll(sections);
+    public void removeSectionsFromFilter(List<String> sectionsList) {
+        this.sections.removeAll(sectionsList);
     }
 
-    public void removeSection(String section) {
+    public void removeSectionFromFilter(String section) {
         this.sections.remove(section);
     }
 

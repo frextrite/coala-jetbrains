@@ -1,11 +1,11 @@
-version '0.0.1'
-group 'io.coala.jetbrains'
-sourceCompatibility = 1.8
-
 plugins {
     id 'java'
     id 'org.jetbrains.intellij' version '0.4.8'
 }
+
+version '0.0.1'
+group 'io.coala.jetbrains'
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()

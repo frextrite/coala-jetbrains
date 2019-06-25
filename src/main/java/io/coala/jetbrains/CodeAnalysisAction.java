@@ -3,7 +3,10 @@ package io.coala.jetbrains;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.DumbAware;
+import com.intellij.openapi.project.Project;
+import io.coala.jetbrains.analysis.CodeAnalysisExecutor;
+import io.coala.jetbrains.analysis.CodeAnalysisTask;
+import io.coala.jetbrains.settings.ProjectSettings;
 import org.jetbrains.annotations.NotNull;
 
 public class CodeAnalysisAction extends AnAction {
@@ -16,6 +19,19 @@ public class CodeAnalysisAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        // TODO: insert action logic here
+        final Project project = e.getProject();
+
+        if(project == null || project.isDisposed()) {
+            return;
+        }
+
+        final ProjectSettings projectSettings = project.getComponent(ProjectSettings.class);
+        final CodeAnalysisExecutor executor = project.getComponent(CodeAnalysisExecutor.class);
+        final CodeAnalysisTask codeAnalysisTask = new CodeAnalysisTask(project);
+
+        projectSettings.setExecutable("/path/to/coala");
+        projectSettings.addSectionToFilter("jetbrains");
+
+        executor.runTask(codeAnalysisTask);
     }
 }

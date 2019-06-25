@@ -31,7 +31,7 @@ public class CodeAnalysisTask extends Task.Backgroundable {
     progressIndicator.setIndeterminate(true);
     progressIndicator.setText("Running coala analysis");
     LOGGER.info("Running coala analysis");
-
+    
     try {
       final ProcessOutput analysisOutput = codeAnalysisRunner.analyze();
       LOGGER.debug(analysisOutput.getStdout());

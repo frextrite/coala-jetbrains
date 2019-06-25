@@ -7,6 +7,8 @@ import io.coala.jetbrains.settings.ProjectSettings;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +45,7 @@ public class CodeAnalysisRunnerTest {
 
     @Test
     public void testCWD() {
-        assertThat(cmd.getWorkDirectory().getPath()).isNotEmpty().isEqualTo("/path/to/file");
+        final Path path = cmd.getWorkDirectory().toPath();
+        assertThat(path).isEqualTo(Paths.get("/path/to/file"));
     }
 }

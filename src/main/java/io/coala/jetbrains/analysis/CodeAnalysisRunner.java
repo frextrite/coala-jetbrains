@@ -42,6 +42,9 @@ public class CodeAnalysisRunner implements ProjectComponent {
         processHandler.startNotify();
         holdAndWaitProcess(processHandler, processOutput);
 
+        final String stdout = processOutput.getStdout();
+        LOGGER.info(stdout);
+
         LOGGER.info("Finished running coala.");
 
         return processOutput;

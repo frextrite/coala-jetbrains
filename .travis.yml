@@ -2,10 +2,12 @@ language: java
 sudo: false
 
 env:
-  - BUILDMODE=CI
+  matrix:
+    - BUILDMODE=CI
 
 jdk:
   - openjdk11
+  - openjdk12
 
 script:
   - .ci/travis.sh

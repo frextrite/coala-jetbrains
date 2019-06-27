@@ -5,7 +5,7 @@ env:
   - BUILDMODE=CI
 
 jdk:
-  - oraclejdk11
+  - openjdk11
 
 script:
   - .ci/travis.sh

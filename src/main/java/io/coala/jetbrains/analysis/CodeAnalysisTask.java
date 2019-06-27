@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import io.coala.jetbrains.utils.Notifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,11 +32,13 @@ public class CodeAnalysisTask extends Task.Backgroundable {
     progressIndicator.setIndeterminate(true);
     progressIndicator.setText("Running coala analysis");
     LOGGER.info("Running coala analysis");
-    
+
     try {
       final ProcessOutput analysisOutput = codeAnalysisRunner.analyze();
       LOGGER.debug(analysisOutput.getStdout());
     } catch (ExecutionException e) {
+      Notifier.showErrorNotification("Failed to run coala. Make sure the supplied path is "
+          + "correct and .coafile exists in project root.", e);
       e.printStackTrace();
     }
 

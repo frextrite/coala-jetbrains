@@ -1,0 +1,43 @@
+package io.coala.jetbrains.settings;
+
+import com.intellij.execution.ExecutionException;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.SystemInfo;
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class ProjectSettingsTest extends LightPlatformCodeInsightFixtureTestCase {
+    private ProjectSettings projectSettings;
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        Project project = myFixture.getProject();
+        ProgressManager progressManager = project.getComponent(ProgressManager.class);
+        this.projectSettings = new ProjectSettings(project, progressManager);
+    }
+
+    @Override
+    protected Project getProject() {
+        return super.getProject();
+    }
+
+    public void testAutomaticDetectionAndSettingOfExecutable() throws IOException, ExecutionException, InterruptedException {
+        Path projectSettingsExecutable;
+        if(SystemInfo.isUnix) {
+            projectSettingsExecutable = projectSettings.determineAndSetExecutable("which");
+            assertThat(projectSettingsExecutable).isNotNull().isEqualTo(Paths.get("/usr/bin/which").toAbsolutePath());
+        }
+        if(SystemInfo.isWindows) {
+            projectSettingsExecutable = projectSettings.determineAndSetExecutable("where");
+            assertThat(projectSettingsExecutable).isNotNull().isEqualTo(Paths.get("C:\\Windows\\System32\\where.exe").toAbsolutePath());
+        }
+    }
+}

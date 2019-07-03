@@ -15,6 +15,11 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <toolWindow id="coala"
+                    icon="/images/coala-13x13.png"
+                    canCloseContents="false"
+                    anchor="bottom"
+                    factoryClass="io.coala.jetbrains.ui.CodeAnalysisToolWindowFactory" />
     </extensions>
 
     <actions>
@@ -43,6 +48,9 @@
         </component>
         <component>
             <implementation-class>io.coala.jetbrains.settings.ProjectSettings</implementation-class>
+        </component>
+        <component>
+            <implementation-class>io.coala.jetbrains.ui.CodeAnalysisConsoleView</implementation-class>
         </component>
     </project-components>
 </idea-plugin>

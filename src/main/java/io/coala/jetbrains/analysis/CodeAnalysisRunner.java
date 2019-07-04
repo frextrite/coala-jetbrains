@@ -42,6 +42,7 @@ public class CodeAnalysisRunner implements ProjectComponent {
         processHandler.startNotify();
         holdAndWaitProcess(processHandler, processOutput);
 
+        /* TODO: Remove in further iterations */
         final String stdout = processOutput.getStdout();
         LOGGER.info(stdout);
 

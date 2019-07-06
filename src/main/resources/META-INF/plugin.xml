@@ -8,13 +8,10 @@
     coala provides a unified interface for linting and fixing all your code, regardless of the programming languages you use.
     ]]></description>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
     <!-- to enable plugin in all products -->
     <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
         <toolWindow id="coala"
                     icon="/images/coala-13x13.png"
                     canCloseContents="false"
@@ -23,13 +20,14 @@
     </extensions>
 
     <actions>
-        <!-- create a new coala group -->
+        <!-- groups -->
         <group id="CodeAnalysis.AnalyzeMenu"
                text="coala">
             <add-to-group group-id="AnalyzeMenu" anchor="last"/>
             <separator/>
         </group>
-        <!-- Add your actions here -->
+
+        <!-- actions -->
         <action id="io.coala.jetbrains.CodeAnalysisAction"
                 class="io.coala.jetbrains.CodeAnalysisAction"
                 text="Analyze with coala"

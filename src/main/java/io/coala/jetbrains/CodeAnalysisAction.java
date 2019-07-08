@@ -10,28 +10,29 @@ import io.coala.jetbrains.settings.ProjectSettings;
 import org.jetbrains.annotations.NotNull;
 
 public class CodeAnalysisAction extends AnAction {
-    private final Logger LOGGER = Logger.getInstance(CodeAnalysisAction.class);
 
-    @Override
-    public void update(@NotNull AnActionEvent e) {
-        super.update(e);
+  private static final Logger LOGGER = Logger.getInstance(CodeAnalysisAction.class);
+
+  @Override
+  public void update(@NotNull AnActionEvent e) {
+    super.update(e);
+  }
+
+  @Override
+  public void actionPerformed(AnActionEvent e) {
+    final Project project = e.getProject();
+
+    if (project == null || project.isDisposed()) {
+      return;
     }
 
-    @Override
-    public void actionPerformed(AnActionEvent e) {
-        final Project project = e.getProject();
+    final ProjectSettings projectSettings = project.getComponent(ProjectSettings.class);
+    final CodeAnalysisExecutor executor = project.getComponent(CodeAnalysisExecutor.class);
+    final CodeAnalysisTask codeAnalysisTask = new CodeAnalysisTask(project);
 
-        if(project == null || project.isDisposed()) {
-            return;
-        }
+    projectSettings.setExecutable("/path/to/coala");
+    projectSettings.addSectionToFilter("jetbrains");
 
-        final ProjectSettings projectSettings = project.getComponent(ProjectSettings.class);
-        final CodeAnalysisExecutor executor = project.getComponent(CodeAnalysisExecutor.class);
-        final CodeAnalysisTask codeAnalysisTask = new CodeAnalysisTask(project);
-
-        projectSettings.setExecutable("/path/to/coala");
-        projectSettings.addSectionToFilter("jetbrains");
-
-        executor.runTask(codeAnalysisTask);
-    }
+    executor.runTask(codeAnalysisTask);
+  }
 }

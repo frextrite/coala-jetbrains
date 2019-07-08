@@ -1,53 +1,62 @@
 package io.coala.jetbrains.utils;
 
-import io.coala.jetbrains.utils.deserializers.CodeAnalysisIssueDeserializer;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import io.coala.jetbrains.utils.deserializers.CodeAnalysisIssueDeserializer;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 public class CodeAnalysisIssueDeserializerTest {
-    private static List<CodeAnalysisIssue> codeAnalysisIssueList;
 
-    @BeforeClass
-    public static void getJsonString() throws URISyntaxException, IOException {
-        final String fileName = "output.json";
-        String jsonString = new String(Files.readAllBytes(Paths.get(CodeAnalysisIssueDeserializerTest.class.getClassLoader().getResource(fileName).toURI())));
-        codeAnalysisIssueList = CodeAnalysisIssueDeserializer.getAllCodeAnalysisIssues(jsonString);
-    }
+  private static List<CodeAnalysisIssue> codeAnalysisIssueList;
 
-    @Test
-    public void testListProperties() {
-        assertThat(codeAnalysisIssueList).hasSize(2);
-        assertThat(codeAnalysisIssueList.get(0).getAffectedCodeList()).hasSize(1);
-    }
+  @BeforeClass
+  public static void getJsonString() throws URISyntaxException, IOException {
+    final String fileName = "output.json";
+    String jsonString = new String(Files.readAllBytes(Paths.get(
+        CodeAnalysisIssueDeserializerTest.class.getClassLoader().getResource(fileName).toURI())));
+    codeAnalysisIssueList = CodeAnalysisIssueDeserializer.getAllCodeAnalysisIssues(jsonString);
+  }
 
-    @Test
-    public void testSourceRangeProperties() {
-        assertThat(codeAnalysisIssueList.get(0).getAffectedCodeList().get(0).getStartSourceRange())
-                .isEqualToComparingFieldByField(new SourceRange("some_file.ext", 2, -1));
-        assertThat(codeAnalysisIssueList.get(0).getAffectedCodeList().get(0).getEndSourceRange())
-                .isEqualToComparingFieldByField(new SourceRange("some_file.ext", 2, -1));
-    }
+  @Test
+  public void testListProperties() {
+    assertThat(codeAnalysisIssueList).hasSize(2);
+    assertThat(codeAnalysisIssueList.get(0).getAffectedCodeList()).hasSize(1);
+  }
 
-    @Test
-    public void testAffectedCodeProperties() {
-        final SourceRange sourceRange = new SourceRange("some_file.ext", 2, -1);
-        assertThat(codeAnalysisIssueList.get(0).getAffectedCodeList().get(0)).isEqualToComparingFieldByFieldRecursively(new AffectedCode("some_file.ext", sourceRange, sourceRange));
-    }
+  @Test
+  public void testSourceRangeProperties() {
+    assertThat(codeAnalysisIssueList.get(0).getAffectedCodeList().get(0).getStartSourceRange())
+        .isEqualToComparingFieldByField(new SourceRange("some_file.ext", 2, -1));
+    assertThat(codeAnalysisIssueList.get(0).getAffectedCodeList().get(0).getEndSourceRange())
+        .isEqualToComparingFieldByField(new SourceRange("some_file.ext", 2, -1));
+  }
 
-    @Test
-    public void testCodeAnalysisIssueProperties() {
-        assertThat(codeAnalysisIssueList.get(0).getMessage()).isNotEmpty().isEqualTo("W191 indentation contains tabs");
-        assertThat(codeAnalysisIssueList.get(0).getSeverity()).isEqualByComparingTo(CodeAnalysisIssue.IssueSeverity.WARNING);
-        assertThat(codeAnalysisIssueList.get(0).getOrigin()).isNotEmpty().isEqualTo("PycodestyleBear (W191)");
-        assertThat(codeAnalysisIssueList.get(1)).isEqualToIgnoringNullFields(new CodeAnalysisIssue("SpaceConsistencyBear", "Line contains following spacing inconsistencies:\n- Spaces used instead of tabs.", null, 1));
-    }
+  @Test
+  public void testAffectedCodeProperties() {
+    final SourceRange sourceRange = new SourceRange("some_file.ext", 2, -1);
+    assertThat(codeAnalysisIssueList.get(0).getAffectedCodeList().get(0))
+        .isEqualToComparingFieldByFieldRecursively(
+            new AffectedCode("some_file.ext", sourceRange, sourceRange));
+  }
+
+  @Test
+  public void testCodeAnalysisIssueProperties() {
+    assertThat(codeAnalysisIssueList.get(0).getMessage()).isNotEmpty()
+        .isEqualTo("W191 indentation contains tabs");
+    assertThat(codeAnalysisIssueList.get(0).getSeverity())
+        .isEqualByComparingTo(CodeAnalysisIssue.IssueSeverity.WARNING);
+    assertThat(codeAnalysisIssueList.get(0).getOrigin()).isNotEmpty()
+        .isEqualTo("PycodestyleBear (W191)");
+    assertThat(codeAnalysisIssueList.get(1)).isEqualToIgnoringNullFields(
+        new CodeAnalysisIssue("SpaceConsistencyBear",
+            "Line contains following spacing inconsistencies:\n- Spaces used instead of tabs.",
+            null, 1));
+  }
 }

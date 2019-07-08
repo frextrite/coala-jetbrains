@@ -3,30 +3,42 @@ package io.coala.jetbrains.utils;
 import java.util.List;
 
 public class CodeAnalysisIssue {
-    private final String origin;
-    private final String message;
-    private final List<AffectedCode> affectedCodeList;
-    private final IssueSeverity severity;
 
-    public enum IssueSeverity {INFO, WARNING, ERROR}
+  private final String origin;
+  private final String message;
+  private final List<AffectedCode> affectedCodeList;
+  private final IssueSeverity severity;
 
-    public CodeAnalysisIssue(String origin, String message, List<AffectedCode> affectedCodeList, int severity) {
-        this.origin = origin;
-        this.message = message;
-        this.affectedCodeList = affectedCodeList;
-        this.severity = getSeverityFromInteger(severity);
-    }
+  public enum IssueSeverity {
+    INFO, WARNING, ERROR
+  }
 
-    private IssueSeverity getSeverityFromInteger(int severity) {
-        return IssueSeverity.values()[severity];
-    }
+  public CodeAnalysisIssue(String origin, String message, List<AffectedCode> affectedCodeList,
+      int severity) {
+    this.origin = origin;
+    this.message = message;
+    this.affectedCodeList = affectedCodeList;
+    this.severity = getSeverityFromInteger(severity);
+  }
 
-    public String getOrigin() { return origin; }
+  private IssueSeverity getSeverityFromInteger(int severity) {
+    return IssueSeverity.values()[severity];
+  }
 
-    public String getMessage() { return message; }
+  public String getOrigin() {
+    return origin;
+  }
 
-    public List<AffectedCode> getAffectedCodeList() { return affectedCodeList; }
+  public String getMessage() {
+    return message;
+  }
 
-    public IssueSeverity getSeverity() { return severity; }
+  public List<AffectedCode> getAffectedCodeList() {
+    return affectedCodeList;
+  }
+
+  public IssueSeverity getSeverity() {
+    return severity;
+  }
 
 }

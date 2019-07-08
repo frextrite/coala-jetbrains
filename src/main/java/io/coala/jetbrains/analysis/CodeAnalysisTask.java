@@ -43,7 +43,7 @@ public class CodeAnalysisTask extends Task.Backgroundable {
     }
 
     progressIndicator.checkCanceled();
-
+    
     progressIndicator.setIndeterminate(false);
     progressIndicator.setFraction(.8);
     progressIndicator.setText("coala analysis done!");

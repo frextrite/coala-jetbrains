@@ -2,75 +2,75 @@ package io.coala.jetbrains.settings;
 
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectSettings implements ProjectComponent {
-    private final Project project;
-    private long timeOutInSeconds;
-    private String cwd;
-    private String executable;
-    private List<String> sections;
 
-    public ProjectSettings(Project project) {
-        this.project = project;
-        this.cwd = project.getBasePath();
-        /* TODO: handle other OSes
-         *  in the future this value will be set from the settings panel
-         */
-        this.executable = null;
-        this.sections = new ArrayList<>();
-        /* TODO: add timeout option in settings panel
-         */
-        this.timeOutInSeconds = 120;
-    }
+  private final Project project;
+  private long timeOutInSeconds;
+  private String cwd;
+  private String executable;
+  private List<String> sections;
 
-    public Project getProject() {
-        return project;
-    }
+  public ProjectSettings(Project project) {
+    this.project = project;
+    this.cwd = project.getBasePath();
+    /* TODO: handle other OSes
+     *  in the future this value will be set from the settings panel
+     */
+    this.executable = null;
+    this.sections = new ArrayList<>();
+    /* TODO: add timeout option in settings panel
+     */
+    this.timeOutInSeconds = 120;
+  }
 
-    public long getTimeOutInSeconds() {
-        return timeOutInSeconds;
-    }
+  public Project getProject() {
+    return project;
+  }
 
-    public String getCwd() {
-        return cwd;
-    }
+  public long getTimeOutInSeconds() {
+    return timeOutInSeconds;
+  }
 
-    public String getExecutable() {
-        return executable;
-    }
+  public String getCwd() {
+    return cwd;
+  }
 
-    public List<String> getSections() {
-        return sections;
-    }
+  public String getExecutable() {
+    return executable;
+  }
 
-    public void setTimeOutInSeconds(long timeOutInSeconds) {
-        this.timeOutInSeconds = timeOutInSeconds;
-    }
+  public List<String> getSections() {
+    return sections;
+  }
 
-    public void setExecutable(String executable) {
-        this.executable = executable;
-    }
+  public void setTimeOutInSeconds(long timeOutInSeconds) {
+    this.timeOutInSeconds = timeOutInSeconds;
+  }
 
-    public void addSectionsToFilter(List<String> sectionsList) {
-        this.sections.addAll(sectionsList);
-    }
+  public void setExecutable(String executable) {
+    this.executable = executable;
+  }
 
-    public void addSectionToFilter(String section) {
-        this.sections.add(section);
-    }
+  public void addSectionsToFilter(List<String> sectionsList) {
+    this.sections.addAll(sectionsList);
+  }
 
-    public void removeSectionsFromFilter(List<String> sectionsList) {
-        this.sections.removeAll(sectionsList);
-    }
+  public void addSectionToFilter(String section) {
+    this.sections.add(section);
+  }
 
-    public void removeSectionFromFilter(String section) {
-        this.sections.remove(section);
-    }
+  public void removeSectionsFromFilter(List<String> sectionsList) {
+    this.sections.removeAll(sectionsList);
+  }
 
-    public void clearSections() {
-        this.sections.clear();
-    }
+  public void removeSectionFromFilter(String section) {
+    this.sections.remove(section);
+  }
+
+  public void clearSections() {
+    this.sections.clear();
+  }
 }

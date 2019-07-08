@@ -1,31 +1,50 @@
 package io.coala.jetbrains.utils;
 
 public class AffectedCode {
-    private final String fileName;
-    private final SourceRange startSourceRange;
-    private final SourceRange endSourceRange;
 
-    public AffectedCode(String fileName, SourceRange startSourceRange, SourceRange endSourceRange) {
-        this.fileName = fileName;
-        this.startSourceRange = startSourceRange;
-        this.endSourceRange = endSourceRange;
-    }
+  private final String fileName;
+  private final SourceRange startSourceRange;
+  private final SourceRange endSourceRange;
 
-    public String getFileName() { return fileName; }
+  public AffectedCode(String fileName, SourceRange startSourceRange, SourceRange endSourceRange) {
+    this.fileName = fileName;
+    this.startSourceRange = startSourceRange;
+    this.endSourceRange = endSourceRange;
+  }
 
-    public SourceRange getStartSourceRange() { return startSourceRange; }
+  public String getFileName() {
+    return fileName;
+  }
 
-    public SourceRange getEndSourceRange() { return endSourceRange; }
+  public SourceRange getStartSourceRange() {
+    return startSourceRange;
+  }
 
-    public String getStartFileName() { return startSourceRange.getFile(); }
+  public SourceRange getEndSourceRange() {
+    return endSourceRange;
+  }
 
-    public int getStartLine() { return startSourceRange.getLine(); }
+  public String getStartFileName() {
+    return startSourceRange.getFile();
+  }
 
-    public int getStartColumn() { return startSourceRange.getColumn(); }
+  public int getStartLine() {
+    return startSourceRange.getLine();
+  }
 
-    public String getEndFileName() { return endSourceRange.getFile(); }
+  public int getStartColumn() {
+    return startSourceRange.getColumn();
+  }
 
-    public int getEndLine() { return endSourceRange.getLine(); }
+  public String getEndFileName() {
+    return endSourceRange.getFile();
+  }
 
-    public int getEndColumn() { return endSourceRange.getColumn(); }
+  public int getEndLine() {
+    return endSourceRange.getLine();
+  }
+
+  public int getEndColumn() {
+    return endSourceRange.getColumn();
+  }
 }

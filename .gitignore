@@ -41,3 +41,7 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+
+# Extra files
+**/main.iml
+**/test.iml

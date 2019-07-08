@@ -11,16 +11,16 @@ bears = HTTPSBear, InvalidLinkBear
 
 [java]
 tags = jetbrains
-bears = ArtisticStyleBear, CheckstyleBear, coalaBear, CPDBear, JavaPMDBear
+bears = CheckstyleBear, coalaBear
 files = **.java
 language = Java
-checkstyle_configs = google
-indent_size = 4
+checkstyle_configs = google_checks_coala.xml
+indent_size = 2
 
 [java.misc]
 bears = FilenameBear, LineLengthBear
 file_naming_convention = pascal
-max_line_length = 120
+max_line_length = 100
 
 [java.documentation]
 enabled = false

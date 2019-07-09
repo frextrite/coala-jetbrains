@@ -22,6 +22,9 @@ public class ProjectSettings implements ProjectComponent {
 
   private static Logger LOGGER = Logger.getInstance(ProjectSettings.class);
 
+  private final String pathToWhichExecutable = "/usr/bin/which";
+  private final String pathToWhereExecutable = "C:\\Windows\\System32\\where.exe";
+
   private final Project project;
   private final ProgressManager progressManager;
   private long timeOutInSeconds;
@@ -89,41 +92,48 @@ public class ProjectSettings implements ProjectComponent {
     this.sections.clear();
   }
 
+  /**
+   * This methods searches for the executable in PATH and returns its exact path.
+   *
+   * @param executable the name of the executable to search in PATH
+   * @return the path to the executable
+   * @throws ExecutionException
+   * @throws InterruptedException
+   * @throws IOException
+   */
   public Path determineAndSetExecutable(String executable)
       throws ExecutionException, InterruptedException, IOException {
     final GeneralCommandLine commandLine = new GeneralCommandLine().withParameters(executable);
+
     if (SystemInfo.isUnix) {
-      commandLine.setExePath("/usr/bin/which");
+      commandLine.setExePath(pathToWhichExecutable);
     } else if (SystemInfo.isWindows) {
-      commandLine.setExePath("C:\\Windows\\System32\\where.exe");
+      commandLine.setExePath(pathToWhereExecutable);
     }
+
     Process process = commandLine.createProcess();
     process.waitFor();
+
     if (process.exitValue() == 0) {
-      String parsed_executable = IOUtils
+      String parsedExecutable = IOUtils
           .toString(process.getInputStream(), Charset.defaultCharset()).trim();
-      return Paths.get(parsed_executable);
+      return Paths.get(parsedExecutable);
     }
+
     return null;
   }
 
   private void runAutomaticExecutableRetrieval() {
     final Application app = ApplicationManager.getApplication();
-    app.executeOnPooledThread(() -> {
-      app.invokeLater(() -> {
-        try {
-          Path coalaExecutableLocation = determineAndSetExecutable("coala");
-          if (coalaExecutableLocation != null) {
-            executable = coalaExecutableLocation.toString();
-          }
-        } catch (ExecutionException e) {
-          e.printStackTrace();
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        } catch (IOException e) {
-          e.printStackTrace();
+    app.executeOnPooledThread(() -> app.invokeLater(() -> {
+      try {
+        Path coalaExecutableLocation = determineAndSetExecutable("coala");
+        if (coalaExecutableLocation != null) {
+          executable = coalaExecutableLocation.toString();
         }
-      }, ModalityState.NON_MODAL);
-    });
+      } catch (ExecutionException | InterruptedException | IOException e) {
+        e.printStackTrace();
+      }
+    }, ModalityState.NON_MODAL));
   }
 }

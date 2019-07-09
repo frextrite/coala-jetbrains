@@ -21,6 +21,14 @@ public class CodeAnalysisConsoleView implements ProjectComponent {
     return consoleView;
   }
 
+  /**
+   * This method prints the message to the console.
+   *
+   * <p>Check {@link CodeInspectionSeverity} for the available message severity types
+   *
+   * @param message the message to be printed to the console
+   * @param severity the severity of the printed message
+   */
   public void print(String message, CodeInspectionSeverity severity) {
     switch (severity) {
       case INFO:

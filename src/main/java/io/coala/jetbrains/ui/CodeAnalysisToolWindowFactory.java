@@ -10,12 +10,15 @@ import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
 
 public class CodeAnalysisToolWindowFactory implements ToolWindowFactory, DumbAware {
-    @Override
-    public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        final CodeAnalysisConsoleView codeAnalysisConsoleView = project.getComponent(CodeAnalysisConsoleView.class);
-        final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        final ConsoleView consoleView = codeAnalysisConsoleView.getConsoleView();
-        final Content content = contentFactory.createContent(consoleView.getComponent(), "Analysis Log", false);
-        toolWindow.getContentManager().addContent(content);
-    }
+
+  @Override
+  public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+    final CodeAnalysisConsoleView codeAnalysisConsoleView = project
+        .getComponent(CodeAnalysisConsoleView.class);
+    final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+    final ConsoleView consoleView = codeAnalysisConsoleView.getConsoleView();
+    final Content content = contentFactory
+        .createContent(consoleView.getComponent(), "Analysis Log", false);
+    toolWindow.getContentManager().addContent(content);
+  }
 }

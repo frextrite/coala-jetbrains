@@ -15,46 +15,51 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class Notifier {
-    private static final String title = "coala";
-    private static final NotificationGroup NOTIFICATION = new NotificationGroup("coala",
-        NotificationDisplayType.BALLOON,
-        true);
 
-    public static void showNotification(Notification notification) {
-        ApplicationManager.getApplication().invokeLater(() -> Notifications.Bus.notify(notification));
-    }
+  private static final String title = "coala";
+  private static final NotificationGroup NOTIFICATION = new NotificationGroup("coala",
+      NotificationDisplayType.BALLOON,
+      true);
 
-    public static void showInformationNotification(String message) {
-        final Notification notification = NOTIFICATION.createNotification(title, message, NotificationType.INFORMATION, null);
-        showNotification(notification);
-    }
+  public static void showNotification(Notification notification) {
+    ApplicationManager.getApplication().invokeLater(() -> Notifications.Bus.notify(notification));
+  }
 
-    public static void showWarningNotification(String message) {
-        final Notification notification = NOTIFICATION.createNotification(title, message, NotificationType.WARNING, null);
-        showNotification(notification);
-    }
+  public static void showInformationNotification(String message) {
+    final Notification notification = NOTIFICATION
+        .createNotification(title, message, NotificationType.INFORMATION, null);
+    showNotification(notification);
+  }
 
-    public static void showErrorNotification(String message, @Nullable Throwable throwable) {
-        final UrlOpeningListener urlOpeningListener = new UrlOpeningListener(true);
+  public static void showWarningNotification(String message) {
+    final Notification notification = NOTIFICATION
+        .createNotification(title, message, NotificationType.WARNING, null);
+    showNotification(notification);
+  }
 
-        final Notification notification = NOTIFICATION.createNotification(title,
-                message + "<br/>" + ExceptionUtils.getFullStackTrace(throwable),
-                NotificationType.ERROR,
-                urlOpeningListener)
-            .addAction(showEventLogToolWindowAction());
+  public static void showErrorNotification(String message, @Nullable Throwable throwable) {
+    final UrlOpeningListener urlOpeningListener = new UrlOpeningListener(true);
 
-        showNotification(notification);
-    }
+    final Notification notification = NOTIFICATION.createNotification(title,
+        message + "<br/>" + ExceptionUtils.getFullStackTrace(throwable),
+        NotificationType.ERROR,
+        urlOpeningListener)
+        .addAction(showEventLogToolWindowAction());
 
-    private static NotificationAction showEventLogToolWindowAction() {
-        String actionText = "more";
+    showNotification(notification);
+  }
 
-        return new NotificationAction(actionText) {
-            @Override
-            public void actionPerformed(@NotNull AnActionEvent anActionEvent, @NotNull Notification notification) {
-                ApplicationManager.getApplication().invokeLater(() ->
-                    ToolWindowManager.getInstance(anActionEvent.getProject()).getToolWindow("Event Log").show(null));
-            }
-        };
-    }
+  private static NotificationAction showEventLogToolWindowAction() {
+    final String actionText = "more";
+
+    return new NotificationAction(actionText) {
+      @Override
+      public void actionPerformed(@NotNull AnActionEvent anActionEvent,
+          @NotNull Notification notification) {
+        ApplicationManager.getApplication().invokeLater(() ->
+            ToolWindowManager.getInstance(anActionEvent.getProject()).getToolWindow("Event Log")
+                .show(null));
+      }
+    };
+  }
 }

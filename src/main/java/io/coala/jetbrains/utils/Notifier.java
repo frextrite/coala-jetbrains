@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class Notifier {
-
+  
   private static final String title = "coala";
   private static final NotificationGroup NOTIFICATION = new NotificationGroup("coala",
       NotificationDisplayType.BALLOON,
@@ -41,7 +41,7 @@ public final class Notifier {
     final UrlOpeningListener urlOpeningListener = new UrlOpeningListener(true);
 
     final Notification notification = NOTIFICATION.createNotification(title,
-        message + "<br/>" + ExceptionUtils.getFullStackTrace(throwable),
+        message + "<br/>" + ExceptionUtils.getMessage(throwable),
         NotificationType.ERROR,
         urlOpeningListener)
         .addAction(showEventLogToolWindowAction());

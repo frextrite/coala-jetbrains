@@ -7,7 +7,6 @@ import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessOutput;
 import com.intellij.execution.process.ProcessOutputTypes;
-import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -46,21 +45,17 @@ public class CodeAnalysisRunner implements ProjectComponent {
     final OSProcessHandler processHandler = new OSProcessHandler(process, commandLineString);
     final ProcessOutput processOutput = getProcessOutputWithTextAvailableListener(processHandler);
 
+    codeAnalysisConsoleView.clear();
     LOGGER.info("Running coala command " + commandLineString);
-    codeAnalysisConsoleView.getConsoleView().clear();
-    codeAnalysisConsoleView.getConsoleView()
-        .print("Running coala command " + commandLineString + "\n",
-            ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+    codeAnalysisConsoleView
+        .print("Running coala command " + commandLineString + "\n", CodeInspectionSeverity.VERBOSE);
 
     addConsolePrinterListener(processHandler);
     processHandler.startNotify();
     holdAndWaitProcess(processHandler, processOutput);
 
-    /* TODO: Remove in further iterations */
-    final String stdout = processOutput.getStdout();
-    LOGGER.info(stdout);
-
     LOGGER.info("Finished running coala.");
+    codeAnalysisConsoleView.print("Finished running coala.", CodeInspectionSeverity.VERBOSE);
 
     return processOutput;
   }
@@ -88,6 +83,7 @@ public class CodeAnalysisRunner implements ProjectComponent {
     commandLine.setWorkDirectory(cwd);
     commandLine.setExePath(executable);
     commandLine.addParameter("--json");
+    commandLine.addParameter("-V");
 
     commandLine.addParameters("--filter-by", "section_tags");
     for (String section : sections) {
@@ -160,37 +156,101 @@ public class CodeAnalysisRunner implements ProjectComponent {
     });
   }
 
+  private String determineFinalText(String text, CodeInspectionSeverity severity,
+      boolean isOverflow) {
+    if (!isOverflow) {
+      if (severity == CodeInspectionSeverity.ERROR || severity == CodeInspectionSeverity.DEBUG) {
+        return text.substring(7);
+      } else if (severity == CodeInspectionSeverity.WARNING) {
+        return text.substring(9);
+      }
+    }
+
+    return text;
+  }
+
+  private void printToConsole(String text, CodeInspectionSeverity prefixSeverity,
+      CodeInspectionSeverity suffixSeverity, boolean isOverflow) {
+    final String errorPrefix = "[ERROR]";
+    final String debugPrefix = "[DEBUG]";
+    final String warningPrefix = "[WARNING]";
+
+    if (!isOverflow) {
+      final String textToPrint = determineFinalText(text, prefixSeverity, isOverflow);
+
+      if (prefixSeverity == CodeInspectionSeverity.ERROR) {
+        codeAnalysisConsoleView.print(errorPrefix, prefixSeverity);
+      } else if (prefixSeverity == CodeInspectionSeverity.DEBUG) {
+        codeAnalysisConsoleView.print(debugPrefix, prefixSeverity);
+      } else if (prefixSeverity == CodeInspectionSeverity.WARNING) {
+        codeAnalysisConsoleView.print(warningPrefix, prefixSeverity);
+      } else {
+        codeAnalysisConsoleView.print("\n", CodeInspectionSeverity.INFO);
+      }
+
+      codeAnalysisConsoleView.print(textToPrint, suffixSeverity);
+    } else {
+      if (prefixSeverity == CodeInspectionSeverity.WARNING) {
+        codeAnalysisConsoleView.print("\b\b\b\b\b\b\b\b\b" + warningPrefix, prefixSeverity);
+      } else if (prefixSeverity == CodeInspectionSeverity.ERROR) {
+        codeAnalysisConsoleView.print("\b\b\b\b\b\b\b" + errorPrefix, prefixSeverity);
+      } else if (prefixSeverity == CodeInspectionSeverity.DEBUG) {
+        codeAnalysisConsoleView.print("\b\b\b\b\b\b\b" + debugPrefix, prefixSeverity);
+      } else {
+        codeAnalysisConsoleView.print("\n", CodeInspectionSeverity.INFO);
+      }
+
+      codeAnalysisConsoleView.print(text, suffixSeverity);
+    }
+  }
+
   private void addConsolePrinterListener(@NotNull OSProcessHandler processHandler) {
     processHandler.addProcessListener(new ProcessAdapter() {
+      String previousOutput = "";
+
       @Override
       public void onTextAvailable(@NotNull ProcessEvent event, @NotNull Key outputType) {
-        String text = event.getText();
+        final String text = event.getText();
 
         if (text == null) {
           return;
         }
 
         if (outputType.equals(ProcessOutputTypes.STDERR)) {
-          String severityCheckText = text.length() >= 8 ? text.substring(0, 7).toLowerCase() : null;
+          final String severityCheckText =
+              text.length() >= 10 ? text.substring(0, 10).toLowerCase() : null;
+          final int previousOutputLength = previousOutput.length();
+          final String previousOutputSeverityCheckText =
+              previousOutput.length() >= 7 ? previousOutput.substring(previousOutputLength - 7)
+                  .toLowerCase() : "";
 
           if (severityCheckText != null) {
-            String textWithoutTag = text.substring(7);
-
             if (severityCheckText.contains("[error]")) {
-              codeAnalysisConsoleView.print("[ERROR]", CodeInspectionSeverity.ERROR);
-              codeAnalysisConsoleView.print(textWithoutTag, CodeInspectionSeverity.INFO);
+              printToConsole(text, CodeInspectionSeverity.ERROR,
+                  CodeInspectionSeverity.INFO, false);
             } else if (severityCheckText.contains("[debug]")) {
-              codeAnalysisConsoleView.print("[DEBUG]", CodeInspectionSeverity.DEBUG);
-              codeAnalysisConsoleView.print(textWithoutTag, CodeInspectionSeverity.INFO);
-            } else if (severityCheckText.contains("[warn]")) {
-              codeAnalysisConsoleView.print("[WARN]", CodeInspectionSeverity.WARNING);
-              codeAnalysisConsoleView.print(textWithoutTag, CodeInspectionSeverity.INFO);
+              printToConsole(text, CodeInspectionSeverity.DEBUG,
+                  CodeInspectionSeverity.INFO, false);
+            } else if (severityCheckText.contains("[warning]")) {
+              printToConsole(text, CodeInspectionSeverity.WARNING,
+                  CodeInspectionSeverity.INFO, false);
+            } else if (previousOutputSeverityCheckText.contains("[error]")) {
+              printToConsole(text, CodeInspectionSeverity.ERROR,
+                  CodeInspectionSeverity.INFO, true);
+            } else if (previousOutputSeverityCheckText.contains("[debug]")) {
+              printToConsole(text, CodeInspectionSeverity.DEBUG,
+                  CodeInspectionSeverity.INFO, true);
+            } else if (previousOutputSeverityCheckText.contains("arning]")) {
+              printToConsole(text, CodeInspectionSeverity.WARNING,
+                  CodeInspectionSeverity.INFO, true);
             } else {
               codeAnalysisConsoleView.print(text, CodeInspectionSeverity.INFO);
             }
           } else {
             codeAnalysisConsoleView.print(text, CodeInspectionSeverity.INFO);
           }
+
+          previousOutput = text.toLowerCase();
         }
       }
     });

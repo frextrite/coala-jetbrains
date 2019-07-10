@@ -4,8 +4,11 @@ import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.JBColor;
 import io.coala.jetbrains.utils.CodeInspectionSeverity;
+import java.awt.Color;
 
 public class CodeAnalysisConsoleView implements ProjectComponent {
 
@@ -70,10 +73,19 @@ public class CodeAnalysisConsoleView implements ProjectComponent {
   }
 
   private void debug(String message) {
-    this.consoleView.print(message, ConsoleViewContentType.LOG_DEBUG_OUTPUT);
+    this.consoleView.print(message, getDebugCosoleViewContentType());
   }
 
   private void verbose(String message) {
     this.consoleView.print(message, ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+  }
+
+  private ConsoleViewContentType getDebugCosoleViewContentType() {
+    final ConsoleViewContentType errorOutput = ConsoleViewContentType.LOG_DEBUG_OUTPUT;
+    final Color color = new Color(34, 183, 52);
+
+    final TextAttributes errorOutputAttributes = errorOutput.getAttributes();
+    errorOutputAttributes.setForegroundColor(new JBColor(color, color));
+    return new ConsoleViewContentType("CONSOLE_DEBUG_OUTPUT", errorOutputAttributes);
   }
 }

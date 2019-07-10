@@ -4,5 +4,6 @@ public enum CodeInspectionSeverity {
     INFO,
     WARNING,
     ERROR,
-    DEBUG
+    DEBUG,
+    VERBOSE
 }

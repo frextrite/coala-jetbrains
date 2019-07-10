@@ -8,6 +8,7 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.openapi.project.Project;
 import io.coala.jetbrains.analysis.CodeAnalysisRunner;
 import io.coala.jetbrains.settings.ProjectSettings;
+import io.coala.jetbrains.ui.CodeAnalysisConsoleView;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class CodeAnalysisRunnerTest {
 
   private static final Project project = mock(Project.class);
   private static final ProjectSettings projectSettings = mock(ProjectSettings.class);
+  private static final CodeAnalysisConsoleView codeAnalysisConsoleView = mock(CodeAnalysisConsoleView.class);
 
   private static final String cwd = "/path/to/file";
   private static final String executable = "coala";
@@ -33,7 +35,7 @@ public class CodeAnalysisRunnerTest {
     when(projectSettings.getExecutable()).thenReturn(executable);
     when(projectSettings.getSections()).thenReturn(sections);
 
-    final CodeAnalysisRunner codeAnalysisRunner = new CodeAnalysisRunner(project, projectSettings);
+    final CodeAnalysisRunner codeAnalysisRunner = new CodeAnalysisRunner(project, projectSettings, codeAnalysisConsoleView);
     cmd = codeAnalysisRunner.getNewGeneralCommandLine();
   }
 
@@ -41,7 +43,7 @@ public class CodeAnalysisRunnerTest {
   public void testCommandString() {
     final String commandLineString = cmd.getCommandLineString();
     assertThat(commandLineString).isNotEmpty()
-        .isEqualTo("coala --json --log-json --filter-by section_tags jetbrains");
+        .isEqualTo("coala --json --filter-by section_tags jetbrains");
   }
 
   @Test

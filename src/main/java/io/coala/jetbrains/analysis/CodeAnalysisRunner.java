@@ -7,11 +7,14 @@ import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessOutput;
 import com.intellij.execution.process.ProcessOutputTypes;
+import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import io.coala.jetbrains.settings.ProjectSettings;
+import io.coala.jetbrains.ui.CodeAnalysisConsoleView;
+import io.coala.jetbrains.utils.CodeInspectionSeverity;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.jetbrains.annotations.NotNull;
@@ -21,10 +24,13 @@ public class CodeAnalysisRunner implements ProjectComponent {
   private static final Logger LOGGER = Logger.getInstance(CodeAnalysisRunner.class);
   private final ProjectSettings projectSettings;
   private final Project project;
+  private final CodeAnalysisConsoleView codeAnalysisConsoleView;
 
-  public CodeAnalysisRunner(Project project, ProjectSettings projectSettings) {
+  public CodeAnalysisRunner(Project project, ProjectSettings projectSettings,
+      CodeAnalysisConsoleView codeAnalysisConsoleView) {
     this.project = project;
     this.projectSettings = projectSettings;
+    this.codeAnalysisConsoleView = codeAnalysisConsoleView;
   }
 
   /**
@@ -41,7 +47,12 @@ public class CodeAnalysisRunner implements ProjectComponent {
     final ProcessOutput processOutput = getProcessOutputWithTextAvailableListener(processHandler);
 
     LOGGER.info("Running coala command " + commandLineString);
+    codeAnalysisConsoleView.getConsoleView().clear();
+    codeAnalysisConsoleView.getConsoleView()
+        .print("Running coala command " + commandLineString + "\n",
+            ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
 
+    addConsolePrinterListener(processHandler);
     processHandler.startNotify();
     holdAndWaitProcess(processHandler, processOutput);
 
@@ -77,7 +88,6 @@ public class CodeAnalysisRunner implements ProjectComponent {
     commandLine.setWorkDirectory(cwd);
     commandLine.setExePath(executable);
     commandLine.addParameter("--json");
-    commandLine.addParameter("--log-json");
 
     commandLine.addParameters("--filter-by", "section_tags");
     for (String section : sections) {
@@ -145,6 +155,42 @@ public class CodeAnalysisRunner implements ProjectComponent {
           processOutput.appendStderr(text);
         } else if (!outputType.equals(ProcessOutputTypes.SYSTEM)) {
           processOutput.appendStdout(text);
+        }
+      }
+    });
+  }
+
+  private void addConsolePrinterListener(@NotNull OSProcessHandler processHandler) {
+    processHandler.addProcessListener(new ProcessAdapter() {
+      @Override
+      public void onTextAvailable(@NotNull ProcessEvent event, @NotNull Key outputType) {
+        String text = event.getText();
+
+        if (text == null) {
+          return;
+        }
+
+        if (outputType.equals(ProcessOutputTypes.STDERR)) {
+          String severityCheckText = text.length() >= 8 ? text.substring(0, 7).toLowerCase() : null;
+
+          if (severityCheckText != null) {
+            String textWithoutTag = text.substring(7);
+
+            if (severityCheckText.contains("[error]")) {
+              codeAnalysisConsoleView.print("[ERROR]", CodeInspectionSeverity.ERROR);
+              codeAnalysisConsoleView.print(textWithoutTag, CodeInspectionSeverity.INFO);
+            } else if (severityCheckText.contains("[debug]")) {
+              codeAnalysisConsoleView.print("[DEBUG]", CodeInspectionSeverity.DEBUG);
+              codeAnalysisConsoleView.print(textWithoutTag, CodeInspectionSeverity.INFO);
+            } else if (severityCheckText.contains("[warn]")) {
+              codeAnalysisConsoleView.print("[WARN]", CodeInspectionSeverity.WARNING);
+              codeAnalysisConsoleView.print(textWithoutTag, CodeInspectionSeverity.INFO);
+            } else {
+              codeAnalysisConsoleView.print(text, CodeInspectionSeverity.INFO);
+            }
+          } else {
+            codeAnalysisConsoleView.print(text, CodeInspectionSeverity.INFO);
+          }
         }
       }
     });

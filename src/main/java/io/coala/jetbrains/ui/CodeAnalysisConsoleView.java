@@ -47,6 +47,10 @@ public class CodeAnalysisConsoleView implements ProjectComponent {
         debug(message);
         break;
 
+      case VERBOSE:
+        verbose(message);
+        break;
+
       default:
         error("Internal Plugin Error. Unidentified severity specified.");
         break;
@@ -54,18 +58,22 @@ public class CodeAnalysisConsoleView implements ProjectComponent {
   }
 
   private void info(String message) {
-    this.consoleView.print(message + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+    this.consoleView.print(message, ConsoleViewContentType.NORMAL_OUTPUT);
   }
 
   private void warn(String message) {
-    this.consoleView.print(message + "\n", ConsoleViewContentType.LOG_WARNING_OUTPUT);
+    this.consoleView.print(message, ConsoleViewContentType.LOG_WARNING_OUTPUT);
   }
 
   private void error(String message) {
-    this.consoleView.print(message + "\n", ConsoleViewContentType.ERROR_OUTPUT);
+    this.consoleView.print(message, ConsoleViewContentType.ERROR_OUTPUT);
   }
 
   private void debug(String message) {
-    this.consoleView.print(message + "\n", ConsoleViewContentType.LOG_DEBUG_OUTPUT);
+    this.consoleView.print(message, ConsoleViewContentType.LOG_DEBUG_OUTPUT);
+  }
+
+  private void verbose(String message) {
+    this.consoleView.print(message, ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
   }
 }

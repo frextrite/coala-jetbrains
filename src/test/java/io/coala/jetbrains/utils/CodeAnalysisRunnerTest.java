@@ -43,7 +43,7 @@ public class CodeAnalysisRunnerTest {
   public void testCommandString() {
     final String commandLineString = cmd.getCommandLineString();
     assertThat(commandLineString).isNotEmpty()
-        .isEqualTo("coala --json --filter-by section_tags jetbrains");
+        .isEqualTo("coala --json -V --filter-by section_tags jetbrains");
   }
 
   @Test

@@ -60,6 +60,10 @@ public class CodeAnalysisConsoleView implements ProjectComponent {
     }
   }
 
+  public void clear() {
+    this.consoleView.clear();
+  }
+
   private void info(String message) {
     this.consoleView.print(message, ConsoleViewContentType.NORMAL_OUTPUT);
   }

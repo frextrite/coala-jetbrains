@@ -1,4 +1,21 @@
 {
+  "logs": [
+    {
+      "level": "ERROR",
+      "message": "An ERROR Message",
+      "timestamp": "2019-07-13T06:31:23.020146"
+    },
+    {
+      "level": "WARNING",
+      "message": "A WARNING Message",
+      "timestamp": "2019-07-13T06:31:55.020146"
+    },
+    {
+      "level": "DEBUG",
+      "message": "A DEBUG Message",
+      "timestamp": "2019-07-13T06:32:35.020146"
+    }
+  ],
   "results": {
     "cli": [
       {

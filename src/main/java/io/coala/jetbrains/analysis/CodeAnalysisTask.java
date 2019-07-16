@@ -6,7 +6,11 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import io.coala.jetbrains.utils.CodeAnalysisLog;
+import io.coala.jetbrains.utils.CodeAnalysisLogPrinter;
 import io.coala.jetbrains.utils.Notifier;
+import io.coala.jetbrains.utils.deserializers.CodeAnalysisLogDeserializer;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,9 +37,9 @@ public class CodeAnalysisTask extends Task.Backgroundable {
     progressIndicator.setText("Running coala analysis");
     LOGGER.info("Running coala analysis");
 
+    ProcessOutput analysisOutput = null;
     try {
-      final ProcessOutput analysisOutput = codeAnalysisRunner.analyze();
-      LOGGER.debug(analysisOutput.getStdout());
+      analysisOutput = codeAnalysisRunner.analyze();
     } catch (ExecutionException e) {
       Notifier.showErrorNotification("Failed to run coala. Make sure the supplied path is "
           + "correct and .coafile exists in project root.", e);
@@ -48,6 +52,18 @@ public class CodeAnalysisTask extends Task.Backgroundable {
     progressIndicator.setFraction(.8);
     progressIndicator.setText("coala analysis done!");
 
-    // TODO: Parse the JSON string, show errors/annotate
+    if (analysisOutput == null) {
+      Notifier.showErrorNotification("An unknown error occurred.", null);
+      return;
+    }
+
+    final String jsonResults = analysisOutput.getStdout();
+
+    final List<CodeAnalysisLog> codeAnalysisLogs = CodeAnalysisLogDeserializer
+        .getAllCodeAnalysisLogs(jsonResults);
+
+    final CodeAnalysisLogPrinter logPrinter = myProject
+        .getComponent(CodeAnalysisLogPrinter.class);
+    logPrinter.submit(codeAnalysisLogs);
   }
 }

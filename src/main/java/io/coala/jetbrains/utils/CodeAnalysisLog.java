@@ -30,6 +30,27 @@ public class CodeAnalysisLog {
   }
 
   /**
+   * This method returns severity tag corresponding to the severity.
+   *
+   * @param severity the severity value
+   * @return a string corresponding to the severity value
+   */
+  public static String getSeverityTagFromSeverity(CodeInspectionSeverity severity) {
+    switch (severity) {
+      case INFO:
+        return "[INFO]";
+      case WARNING:
+        return "[WARNING]";
+      case ERROR:
+        return "[ERROR]";
+      case DEBUG:
+        return "[DEBUG]";
+      default:
+        return null;
+    }
+  }
+
+  /**
    * This methods returns the log time stamp in coala friendly format that can be directly
    * printed to the console.
    *
@@ -54,7 +75,7 @@ public class CodeAnalysisLog {
     return null;
   }
 
-  private CodeInspectionSeverity getSeverityLevelFromString(String severity) {
+  public static CodeInspectionSeverity getSeverityLevelFromString(String severity) {
     switch (severity) {
       case "ERROR":
         return CodeInspectionSeverity.ERROR;

@@ -50,5 +50,8 @@
         <component>
             <implementation-class>io.coala.jetbrains.ui.CodeAnalysisConsoleView</implementation-class>
         </component>
+      <component>
+        <implementation-class>io.coala.jetbrains.utils.CodeAnalysisLogPrinter</implementation-class>
+      </component>
     </project-components>
 </idea-plugin>

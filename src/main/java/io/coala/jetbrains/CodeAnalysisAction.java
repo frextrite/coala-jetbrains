@@ -30,7 +30,10 @@ public class CodeAnalysisAction extends AnAction {
     final CodeAnalysisExecutor executor = project.getComponent(CodeAnalysisExecutor.class);
     final CodeAnalysisTask codeAnalysisTask = new CodeAnalysisTask(project);
 
-    projectSettings.setExecutable("/path/to/coala");
+//    projectSettings.setExecutable("/path/to/coala");
+//    projectSettings.addSectionToFilter("jetbrains");
+    projectSettings.setExecutable("/home/amol/anaconda3/bin/coala");
+    projectSettings.clearSections();
     projectSettings.addSectionToFilter("jetbrains");
 
     executor.runTask(codeAnalysisTask);

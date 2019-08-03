@@ -56,5 +56,9 @@
       <component>
         <implementation-class>io.coala.jetbrains.highlight.IssueManager</implementation-class>
       </component>
+      <component>
+        <implementation-class>io.coala.jetbrains.highlight.HighlightIssueFactory
+        </implementation-class>
+      </component>
     </project-components>
 </idea-plugin>

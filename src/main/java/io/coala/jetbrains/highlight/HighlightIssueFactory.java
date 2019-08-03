@@ -1,0 +1,17 @@
+package io.coala.jetbrains.highlight;
+
+import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.editor.Document;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+public class HighlightIssueFactory implements ProjectComponent {
+
+  private final Map<Document, HighlightIssueWrapper> highlightIssueDocumentMap = new HashMap<>();
+
+  public HighlightIssueWrapper getComponent(Document document) {
+    return highlightIssueDocumentMap.get(document);
+  }
+
+}

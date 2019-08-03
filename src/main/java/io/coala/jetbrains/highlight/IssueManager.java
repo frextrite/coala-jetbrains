@@ -3,18 +3,21 @@ package io.coala.jetbrains.highlight;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.RangeMarker;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import io.coala.jetbrains.utils.AffectedCode;
 import io.coala.jetbrains.utils.CodeAnalysisIssue;
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class IssueManager implements ProjectComponent {
 
@@ -26,33 +29,57 @@ public class IssueManager implements ProjectComponent {
     this.documentManager = documentManager;
   }
 
-  public List<RangeMarker> getAffectedCodeSegmentList(CodeAnalysisIssue issue)
+  public Map<Document, Collection<RangeMarker>> getAllRangeMarkers(
+      List<CodeAnalysisIssue> issueList) throws FileNotFoundException {
+    Map<Document, Collection<RangeMarker>> rangeMarkerDocumentCollection = new HashMap<>();
+
+    for (CodeAnalysisIssue issue : issueList) {
+      final Map<Document, Collection<RangeMarker>> rangeMarkers = getRangeMarkerFromIssue(
+          issue);
+
+      for (Map.Entry<Document, Collection<RangeMarker>> element : rangeMarkers.entrySet()) {
+        final Document document = element.getKey();
+        final Collection<RangeMarker> rangeMarkerCollection = element.getValue();
+
+        for (RangeMarker rangeMarker : rangeMarkerCollection) {
+          if (!rangeMarkerDocumentCollection.get(document).contains(rangeMarker)) {
+            rangeMarkerDocumentCollection.get(document).add(rangeMarker);
+          }
+        }
+      }
+
+    }
+
+    return rangeMarkerDocumentCollection;
+  }
+
+  public Map<Document, Collection<RangeMarker>> getRangeMarkerFromIssue(CodeAnalysisIssue issue)
       throws FileNotFoundException {
-    List<RangeMarker> rangeMarkerList = new ArrayList<>();
+    Map<Document, Collection<RangeMarker>> rangeMarkerDocumentCollection = new HashMap<>();
 
     for (AffectedCode affectedCode : issue.getAffectedCodeList()) {
       final String filePath = affectedCode.getFileName();
-      final PsiFile psiFile = getPsiFile(filePath);
-      final Document document = getDocument(psiFile);
+      final Document document = getDocument(filePath);
 
-      rangeMarkerList.add(createRangeMarker(affectedCode, document));
+      rangeMarkerDocumentCollection.get(document).add(createRangeMarker(affectedCode, document));
     }
 
-    return rangeMarkerList;
+    return rangeMarkerDocumentCollection;
   }
 
-  private Document getDocument(PsiFile psiFile) {
-    return documentManager.getDocument(psiFile);
-  }
-
-  private PsiFile getPsiFile(String filePath) throws FileNotFoundException {
-    final VirtualFile vfsFile = VirtualFileManager.getInstance().findFileByUrl(filePath);
+  private Document getDocument(String filePath) throws FileNotFoundException {
+    final File file = new File(filePath);
+    final VirtualFile vfsFile = LocalFileSystem.getInstance().findFileByIoFile(file);
 
     if (vfsFile == null) {
       throw new FileNotFoundException(filePath);
     }
 
-    return PsiManager.getInstance(project).findFile(vfsFile);
+    return FileDocumentManager.getInstance().getDocument(vfsFile);
+  }
+
+  private PsiFile getPsiFile(Document document) {
+    return documentManager.getPsiFile(document);
   }
 
   private RangeMarker createRangeMarker(AffectedCode affectedCode, Document document) {

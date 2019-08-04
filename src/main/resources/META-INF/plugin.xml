@@ -15,6 +15,9 @@
         <applicationService serviceInterface="io.coala.jetbrains.highlight.HighlightService"
                             serviceImplementation="io.coala.jetbrains.highlight.HighlightService" />
 
+        <applicationService serviceInterface="io.coala.jetbrains.utils.RangeMarkerTextAttributes"
+                            serviceImplementation="io.coala.jetbrains.utils.RangeMarkerTextAttributes" />
+
         <toolWindow id="coala"
                     icon="/images/coala-13x13.png"
                     canCloseContents="false"
@@ -62,6 +65,9 @@
       <component>
         <implementation-class>io.coala.jetbrains.highlight.HighlightIssueFactory
         </implementation-class>
+      </component>
+      <component>
+        <implementation-class>io.coala.jetbrains.highlight.IssueProcessor</implementation-class>
       </component>
     </project-components>
 </idea-plugin>

@@ -7,13 +7,17 @@ import java.util.Map;
 
 public class HighlightIssueFactory implements ProjectComponent {
 
-  private final Map<Document, HighlightIssueWrapper> highlightIssueDocumentMap = new HashMap<>();
+  private final Map<Document, HighlightIssueWrapper> highlightIssueWrappers = new HashMap<>();
 
   public HighlightIssueWrapper getComponent(Document document) {
-    return highlightIssueDocumentMap.get(document);
+    return highlightIssueWrappers.get(document);
   }
 
   public void putComponent(Document document, HighlightIssueWrapper highlightIssueWrapper) {
-    highlightIssueDocumentMap.put(document, highlightIssueWrapper);
+    highlightIssueWrappers.put(document, highlightIssueWrapper);
+  }
+
+  public Map<Document, HighlightIssueWrapper> getHighlightIssueWrappers() {
+    return this.highlightIssueWrappers;
   }
 }

@@ -2,13 +2,17 @@ package io.coala.jetbrains.analysis;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.process.ProcessOutput;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import io.coala.jetbrains.highlight.IssueProcessor;
+import io.coala.jetbrains.utils.CodeAnalysisIssue;
 import io.coala.jetbrains.utils.CodeAnalysisLog;
 import io.coala.jetbrains.utils.CodeAnalysisLogPrinter;
 import io.coala.jetbrains.utils.Notifier;
+import io.coala.jetbrains.utils.deserializers.CodeAnalysisIssueDeserializer;
 import io.coala.jetbrains.utils.deserializers.CodeAnalysisLogDeserializer;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -65,5 +69,11 @@ public class CodeAnalysisTask extends Task.Backgroundable {
     final CodeAnalysisLogPrinter logPrinter = myProject
         .getComponent(CodeAnalysisLogPrinter.class);
     logPrinter.submit(codeAnalysisLogs);
+
+    final List<CodeAnalysisIssue> codeAnalysisIssues = CodeAnalysisIssueDeserializer
+        .getAllCodeAnalysisIssues(jsonResults);
+    final IssueProcessor issueProcessor = myProject.getComponent(IssueProcessor.class);
+    ApplicationManager.getApplication()
+        .runReadAction(() -> issueProcessor.submit(codeAnalysisIssues));
   }
 }

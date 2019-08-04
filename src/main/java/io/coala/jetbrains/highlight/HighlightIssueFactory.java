@@ -2,7 +2,6 @@ package io.coala.jetbrains.highlight;
 
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.editor.Document;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,4 +13,7 @@ public class HighlightIssueFactory implements ProjectComponent {
     return highlightIssueDocumentMap.get(document);
   }
 
+  public void putComponent(Document document, HighlightIssueWrapper highlightIssueWrapper) {
+    highlightIssueDocumentMap.put(document, highlightIssueWrapper);
+  }
 }

@@ -31,40 +31,39 @@ public class IssueManager implements ProjectComponent {
 
   public Map<Document, Collection<RangeMarker>> getAllRangeMarkers(
       List<CodeAnalysisIssue> issueList) throws FileNotFoundException {
-    Map<Document, Collection<RangeMarker>> rangeMarkerDocumentCollection = new HashMap<>();
+    final Map<Document, Collection<RangeMarker>> rangeMarkers = new HashMap<>();
 
     for (CodeAnalysisIssue issue : issueList) {
-      final Map<Document, Collection<RangeMarker>> rangeMarkers = getRangeMarkerFromIssue(
-          issue);
+      final Map<Document, Collection<RangeMarker>> rangeMarkerFromIssue = getRangeMarkerFromIssue(issue);
 
-      for (Map.Entry<Document, Collection<RangeMarker>> element : rangeMarkers.entrySet()) {
+      for (Map.Entry<Document, Collection<RangeMarker>> element : rangeMarkerFromIssue.entrySet()) {
         final Document document = element.getKey();
         final Collection<RangeMarker> rangeMarkerCollection = element.getValue();
 
         for (RangeMarker rangeMarker : rangeMarkerCollection) {
-          if (!rangeMarkerDocumentCollection.get(document).contains(rangeMarker)) {
-            rangeMarkerDocumentCollection.get(document).add(rangeMarker);
+          if (!rangeMarkers.get(document).contains(rangeMarker)) {
+            rangeMarkers.get(document).add(rangeMarker);
           }
         }
       }
 
     }
 
-    return rangeMarkerDocumentCollection;
+    return rangeMarkers;
   }
 
   public Map<Document, Collection<RangeMarker>> getRangeMarkerFromIssue(CodeAnalysisIssue issue)
       throws FileNotFoundException {
-    Map<Document, Collection<RangeMarker>> rangeMarkerDocumentCollection = new HashMap<>();
+    Map<Document, Collection<RangeMarker>> rangeMarkers = new HashMap<>();
 
     for (AffectedCode affectedCode : issue.getAffectedCodeList()) {
       final String filePath = affectedCode.getFileName();
       final Document document = getDocument(filePath);
 
-      rangeMarkerDocumentCollection.get(document).add(createRangeMarker(affectedCode, document));
+      rangeMarkers.get(document).add(createRangeMarker(affectedCode, document));
     }
 
-    return rangeMarkerDocumentCollection;
+    return rangeMarkers;
   }
 
   private Document getDocument(String filePath) throws FileNotFoundException {

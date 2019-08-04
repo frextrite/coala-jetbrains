@@ -1,6 +1,7 @@
 package io.coala.jetbrains.highlight;
 
 import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
@@ -14,12 +15,15 @@ import io.coala.jetbrains.utils.AffectedCode;
 import io.coala.jetbrains.utils.CodeAnalysisIssue;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class IssueManager implements ProjectComponent {
+
+  private static final Logger LOGGER = Logger.getInstance(IssueManager.class);
 
   private final Project project;
   private final PsiDocumentManager documentManager;
@@ -34,11 +38,16 @@ public class IssueManager implements ProjectComponent {
     final Map<Document, Collection<RangeMarker>> rangeMarkers = new HashMap<>();
 
     for (CodeAnalysisIssue issue : issueList) {
-      final Map<Document, Collection<RangeMarker>> rangeMarkerFromIssue = getRangeMarkerFromIssue(issue);
+      final Map<Document, Collection<RangeMarker>> rangeMarkerFromIssue = getRangeMarkerFromIssue(
+          issue);
 
       for (Map.Entry<Document, Collection<RangeMarker>> element : rangeMarkerFromIssue.entrySet()) {
         final Document document = element.getKey();
         final Collection<RangeMarker> rangeMarkerCollection = element.getValue();
+
+        if (!rangeMarkers.containsKey(document)) {
+          rangeMarkers.put(document, new ArrayList<>());
+        }
 
         for (RangeMarker rangeMarker : rangeMarkerCollection) {
           if (!rangeMarkers.get(document).contains(rangeMarker)) {
@@ -48,7 +57,6 @@ public class IssueManager implements ProjectComponent {
       }
 
     }
-
     return rangeMarkers;
   }
 
@@ -60,9 +68,12 @@ public class IssueManager implements ProjectComponent {
       final String filePath = affectedCode.getFileName();
       final Document document = getDocument(filePath);
 
+      if (!rangeMarkers.containsKey(document)) {
+        rangeMarkers.put(document, new ArrayList<>());
+      }
+
       rangeMarkers.get(document).add(createRangeMarker(affectedCode, document));
     }
-
     return rangeMarkers;
   }
 
@@ -88,10 +99,18 @@ public class IssueManager implements ProjectComponent {
   }
 
   private TextRange getIssueTextRange(AffectedCode affectedCode, Document document) {
-    final int startLine = affectedCode.getStartLine() - 1;
-    final int endLine = affectedCode.getEndLine() - 1;
-    final int startColumn = affectedCode.getStartColumn();
-    final int endColumn = affectedCode.getEndColumn();
+    int startLine = affectedCode.getStartLine() - 1;
+    int endLine = affectedCode.getEndLine() - 1;
+    int startColumn = affectedCode.getStartColumn();
+    int endColumn = affectedCode.getEndColumn();
+
+    if (startColumn == -1 && endColumn == -1) {
+      startColumn = 0;
+      endLine += 1;
+    } else {
+      startColumn -= 2;
+      endColumn -= 2;
+    }
 
     final int startOffset = getOffsetInDocument(document, startLine, startColumn);
     final int endOffset = getOffsetInDocument(document, endLine, endColumn);

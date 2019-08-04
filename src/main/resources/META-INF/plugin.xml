@@ -14,6 +14,9 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceInterface="io.coala.jetbrains.utils.RangeMarkerTextAttributes"
                             serviceImplementation="io.coala.jetbrains.utils.RangeMarkerTextAttributes" />
+        <applicationService serviceInterface="io.coala.jetbrains.highlight.HighlightService"
+                            serviceImplementation="io.coala.jetbrains.highlight.HighlightService" />
+      
         <toolWindow id="coala"
                     icon="/images/coala-13x13.png"
                     canCloseContents="false"

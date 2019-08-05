@@ -103,13 +103,31 @@ public class IssueProcessor implements ProjectComponent {
   private HighlightInfo createNewHighlightInfo(HighlightIssue issue) {
     return HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION)
         .range(issue.getTextRange())
-        .severity(getSeverity(issue))
-        .descriptionAndTooltip("coala (" + issue.getOrigin() + "): " + issue.getMessage())
+        .severity(getHighlightSeverity(issue))
+        .descriptionAndTooltip(getDescriptionAndTooltip(issue))
         .needsUpdateOnTyping(false)
         .create();
   }
 
-  private HighlightSeverity getSeverity(HighlightIssue issue) {
+  private String getDescriptionAndTooltip(HighlightIssue issue) {
+    String coalaPrefix = "coala";
+    String bear = issue.getOrigin();
+    String message = issue.getMessage();
+
+    String prefix = coalaPrefix;
+
+    if(bear != null && !bear.isEmpty()) {
+      prefix += " (" + bear + ")";
+    }
+
+    if(message != null && !message.isEmpty()) {
+      return prefix + ": " + message;
+    }
+
+    return prefix;
+  }
+
+  private HighlightSeverity getHighlightSeverity(HighlightIssue issue) {
     switch (issue.getSeverity()) {
       case INFO:
         return HighlightSeverity.INFORMATION;

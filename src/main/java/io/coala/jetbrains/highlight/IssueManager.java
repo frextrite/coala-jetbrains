@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 public class IssueManager implements ProjectComponent {
 
@@ -92,13 +93,15 @@ public class IssueManager implements ProjectComponent {
     return documentManager.getPsiFile(document);
   }
 
-  private RangeMarker createRangeMarker(AffectedCode affectedCode, Document document) {
+  private RangeMarker createRangeMarker(@NotNull AffectedCode affectedCode,
+      @NotNull Document document) {
     final TextRange textRange = getIssueTextRange(affectedCode, document);
 
     return document.createRangeMarker(textRange);
   }
 
-  private TextRange getIssueTextRange(AffectedCode affectedCode, Document document) {
+  private TextRange getIssueTextRange(@NotNull AffectedCode affectedCode,
+      @NotNull Document document) {
     int startLine = affectedCode.getStartLine() - 1;
     int endLine = affectedCode.getEndLine() - 1;
     int startColumn = affectedCode.getStartColumn();
@@ -118,7 +121,7 @@ public class IssueManager implements ProjectComponent {
     return new TextRange(startOffset, endOffset);
   }
 
-  private int getOffsetInDocument(Document document, int line, int column) {
+  private int getOffsetInDocument(@NotNull Document document, int line, int column) {
     return document.getLineStartOffset(line) + column;
   }
 

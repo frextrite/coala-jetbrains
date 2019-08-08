@@ -40,6 +40,13 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
             <add-to-group group-id="CodeAnalysis.AnalyzeMenu" anchor="last"/>
         </action>
+        <action id="io.coala.jetbrains.CodeAnalysisClearAction"
+                class="io.coala.jetbrains.CodeAnalysisClearAction"
+                text="Clear coala highlights"
+                description="Clears all annotations created by coala analysis">
+          <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+          <add-to-group group-id="CodeAnalysis.AnalyzeMenu" anchor="last"/>
+        </action>
     </actions>
 
     <project-components>

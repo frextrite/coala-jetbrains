@@ -2,9 +2,10 @@ package io.coala.jetbrains.highlight;
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.RangeMarker;
+import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class HighlightIssueWrapper {
@@ -15,19 +16,18 @@ public class HighlightIssueWrapper {
 
   private final Collection<HighlightIssue> highlightIssues;
   private final Collection<HighlightInfo> highlightInfos;
-  private final Collection<RangeMarker> rangeMarkers;
+  private final Collection<RangeHighlighter> rangeHighlighters;
 
   public HighlightIssueWrapper(Project project,
       Document document, PsiFile psiFile,
       Collection<HighlightIssue> highlightIssues,
-      Collection<HighlightInfo> highlightInfos,
-      Collection<RangeMarker> rangeMarkers) {
+      Collection<HighlightInfo> highlightInfos) {
     this.project = project;
     this.document = document;
     this.psiFile = psiFile;
     this.highlightIssues = highlightIssues;
     this.highlightInfos = highlightInfos;
-    this.rangeMarkers = rangeMarkers;
+    this.rangeHighlighters = new ArrayList<>();
   }
 
   public Project getProject() {
@@ -50,16 +50,16 @@ public class HighlightIssueWrapper {
     return highlightInfos;
   }
 
-  public Collection<RangeMarker> getRangeMarkers() {
-    return rangeMarkers;
+  public Collection<RangeHighlighter> getRangeHighlighters() {
+    return rangeHighlighters;
   }
 
   public void addHighlightIssue(HighlightIssue highlightIssue) {
     highlightIssues.add(highlightIssue);
   }
 
-  public void addRangeMarker(RangeMarker range) {
-    rangeMarkers.add(range);
+  public void addRangeHighlighter(RangeHighlighter rangeHighlighter) {
+    rangeHighlighters.add(rangeHighlighter);
   }
 
   public void addHighlightInfo(HighlightInfo highlightInfo) {
@@ -70,8 +70,8 @@ public class HighlightIssueWrapper {
     highlightIssues.addAll(highlightIssuesCollection);
   }
 
-  public void addAllRangeMarkers(Collection<RangeMarker> rangeMarkerCollection) {
-    rangeMarkers.addAll(rangeMarkerCollection);
+  public void addAllRangeHighlighters(Collection<RangeHighlighter> rangeHighlighterCollection) {
+    rangeHighlighters.addAll(rangeHighlighterCollection);
   }
 
   public void addAllHighlightInfos(Collection<HighlightInfo> highlightInfoCollection) {
@@ -83,11 +83,11 @@ public class HighlightIssueWrapper {
       highlightInfo.getHighlighter().dispose();
     }
 
-    for (RangeMarker rangeMarker : rangeMarkers) {
-      rangeMarker.dispose();
+    for (RangeHighlighter rangeHighlighter : rangeHighlighters) {
+      rangeHighlighter.dispose();
     }
 
-    rangeMarkers.clear();
     highlightInfos.clear();
+    rangeHighlighters.clear();
   }
 }

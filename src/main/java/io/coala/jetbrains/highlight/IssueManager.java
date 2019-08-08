@@ -112,8 +112,8 @@ public class IssueManager implements ProjectComponent {
       startColumn = 0;
       endLine += 1;
     } else {
-      startColumn -= 2;
-      endColumn -= 2;
+      startColumn -= 1;
+      endColumn -= 1;
     }
 
     final int startOffset = getOffsetInDocument(document, startLine, startColumn);

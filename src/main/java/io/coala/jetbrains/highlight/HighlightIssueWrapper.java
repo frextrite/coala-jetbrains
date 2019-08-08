@@ -80,6 +80,9 @@ public class HighlightIssueWrapper {
 
   public void clear() {
     for (HighlightInfo highlightInfo : highlightInfos) {
+      if (highlightInfo.getHighlighter() == null) {
+        continue;
+      }
       highlightInfo.getHighlighter().dispose();
     }
 

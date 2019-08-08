@@ -39,8 +39,8 @@ public class IssueManager implements ProjectComponent {
     final Map<Document, Collection<RangeMarker>> rangeMarkers = new HashMap<>();
 
     for (CodeAnalysisIssue issue : issueList) {
-      final Map<Document, Collection<RangeMarker>> rangeMarkerFromIssue = getRangeMarkerFromIssue(
-          issue);
+      final Map<Document, Collection<RangeMarker>> rangeMarkerFromIssue =
+          getRangeMarkerFromIssue(issue);
 
       for (Map.Entry<Document, Collection<RangeMarker>> element : rangeMarkerFromIssue.entrySet()) {
         final Document document = element.getKey();
@@ -75,6 +75,7 @@ public class IssueManager implements ProjectComponent {
 
       rangeMarkers.get(document).add(createRangeMarker(affectedCode, document));
     }
+
     return rangeMarkers;
   }
 

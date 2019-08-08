@@ -6,6 +6,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.editor.impl.DocumentMarkupModel;
 import com.intellij.openapi.editor.markup.HighlighterLayer;
 import com.intellij.openapi.editor.markup.HighlighterTargetArea;
@@ -14,6 +15,7 @@ import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.project.Project;
 import io.coala.jetbrains.utils.RangeMarkerTextAttributes;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -37,11 +39,15 @@ public class HighlightService {
       final HighlightIssueWrapper highlightIssueWrapper = element.getValue();
 
       final MarkupModel markupModel = DocumentMarkupModel.forDocument(document, project, false);
-      /* @TODO: Highly obstructive
-       * Create an array of RangeHighlighters and remove the highlighters from the markup model
-       * that are present in the array
-       */
-      markupModel.removeAllHighlighters();
+
+      if (markupModel == null) {
+        continue;
+      }
+
+      final RangeHighlighter[] highlighters = markupModel.getAllHighlighters();
+      Arrays.stream(highlighters)
+          .filter(highlighter -> highlightIssueWrapper.getRangeHighlighters().contains(highlighter))
+          .forEach(RangeMarker::dispose);
 
       highlightIssueWrapper.clear();
     }
@@ -61,11 +67,11 @@ public class HighlightService {
       final Collection<HighlightInfo> highlightInfos = highlightIssueWrapper.getHighlightInfos();
 
       ApplicationManager.getApplication()
-          .invokeLater(() -> addRangeHighlighters(project, document, highlightIssueWrapper));
-      ApplicationManager.getApplication()
-          .invokeLater(() -> setHighlightersToEditor(project, document, highlightInfos));
+          .invokeLater(() -> {
+            addRangeHighlighters(project, document, highlightIssueWrapper);
+            setHighlightersToEditor(project, document, highlightInfos);
+          });
     }
-
   }
 
   private void addRangeHighlighters(Project project, Document document,

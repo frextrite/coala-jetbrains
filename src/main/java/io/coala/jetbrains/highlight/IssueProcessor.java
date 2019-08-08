@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 public class IssueProcessor implements ProjectComponent {
 
@@ -25,8 +26,6 @@ public class IssueProcessor implements ProjectComponent {
   private final Project project;
   private final IssueManager issueManager;
   private final HighlightIssueFactory highlightIssueFactory;
-  private Map<Document, Collection<RangeMarker>> rangeMarkers = new HashMap<>();
-  private Map<Document, Collection<HighlightInfo>> highlightInfos = new HashMap<>();
 
   public IssueProcessor(Project project, IssueManager issueManager,
       HighlightIssueFactory highlightIssueFactory) {
@@ -37,13 +36,16 @@ public class IssueProcessor implements ProjectComponent {
 
   public void submit(List<CodeAnalysisIssue> codeAnalysisIssueList) {
     try {
-      populateRangeMarkers(codeAnalysisIssueList);
-      populateHighlightInfo(codeAnalysisIssueList);
-
-      final Map<Document, Collection<HighlightIssue>> highlightIssues = getHighlightIssueCollectionDocumentMap(
+      final Map<Document, Collection<HighlightIssue>> highlightIssues = getNewHighlightIssues(
           codeAnalysisIssueList);
 
-      addHighlightIssueToWrapper(highlightIssues);
+      final Map<Document, Collection<HighlightInfo>> highlightInfos = getHighlightInfos(
+          highlightIssues);
+
+      final Map<Document, HighlightIssueWrapper> highlightIssueWrappers = createHighlightIssueWrappers(
+          highlightIssues, highlightInfos);
+
+      addHighlightIssueWrapperToProjectLevelFactory(highlightIssueWrappers);
 
       final HighlightService highlightService = ServiceManager.getService(HighlightService.class);
       highlightService.doPerformHighlighting(project);
@@ -53,26 +55,42 @@ public class IssueProcessor implements ProjectComponent {
     }
   }
 
-  private void addHighlightIssueToWrapper(
-      Map<Document, Collection<HighlightIssue>> highlightIssues) {
-    final Map<Document, Collection<RangeMarker>> allRangeMarkers = getAllRangeMarkers();
+  private Map<Document, HighlightIssueWrapper> createHighlightIssueWrappers(
+      Map<Document, Collection<HighlightIssue>> highlightIssues,
+      Map<Document, Collection<HighlightInfo>> highlightInfos) {
+    Map<Document, HighlightIssueWrapper> highlightIssueWrapperMap = new HashMap<>();
 
-    for (Map.Entry<Document, Collection<HighlightIssue>> element : highlightIssues
-        .entrySet()) {
+    for (Map.Entry<Document, Collection<HighlightIssue>> element : highlightIssues.entrySet()) {
       final Document document = element.getKey();
-      final Collection<HighlightIssue> highlightIssueCollection = element.getValue();
 
-      final HighlightIssueWrapper highlightIssueWrapper = new HighlightIssueWrapper(project,
-          document, null, highlightIssueCollection, highlightInfos.get(document));
+      final HighlightIssueWrapper highlightIssueWrapper = getNewHighlightIssueWrapper(document,
+          highlightIssues.get(document), highlightInfos.get(document));
 
+      highlightIssueWrapperMap.put(document, highlightIssueWrapper);
+    }
+
+    return highlightIssueWrapperMap;
+  }
+
+  private void addHighlightIssueWrapperToProjectLevelFactory(
+      Map<Document, HighlightIssueWrapper> highlightIssueWrapperMap) {
+    for (Map.Entry<Document, HighlightIssueWrapper> element : highlightIssueWrapperMap.entrySet()) {
+      final Document document = element.getKey();
+      final HighlightIssueWrapper highlightIssueWrapper = element.getValue();
       highlightIssueFactory.putComponent(document, highlightIssueWrapper);
     }
   }
 
-  private void populateHighlightInfo(List<CodeAnalysisIssue> codeAnalysisIssueList)
-      throws FileNotFoundException {
-    final Map<Document, Collection<HighlightIssue>> highlightIssues = getHighlightIssueCollectionDocumentMap(
-        codeAnalysisIssueList);
+  private HighlightIssueWrapper getNewHighlightIssueWrapper(@NotNull Document document,
+      Collection<HighlightIssue> highlightIssueCollection,
+      Collection<HighlightInfo> highlightInfoCollection) {
+    return new HighlightIssueWrapper(project, document, null, highlightIssueCollection,
+        highlightInfoCollection);
+  }
+
+  private Map<Document, Collection<HighlightInfo>> getHighlightInfos(
+      Map<Document, Collection<HighlightIssue>> highlightIssues) {
+    final Map<Document, Collection<HighlightInfo>> highlightInfos = new HashMap<>();
 
     for (Map.Entry<Document, Collection<HighlightIssue>> element : highlightIssues.entrySet()) {
       final Document document = element.getKey();
@@ -81,12 +99,15 @@ public class IssueProcessor implements ProjectComponent {
       Collection<HighlightInfo> highlightInfoCollection = createHighlightInfos(
           highlightIssueCollection);
 
+      // TODO: This may be removed
       if (!highlightInfos.containsKey(document)) {
         highlightInfos.put(document, new ArrayList<>());
       }
 
       highlightInfos.get(document).addAll(highlightInfoCollection);
     }
+
+    return highlightInfos;
   }
 
   private Collection<HighlightInfo> createHighlightInfos(
@@ -116,11 +137,11 @@ public class IssueProcessor implements ProjectComponent {
 
     String prefix = coalaPrefix;
 
-    if(bear != null && !bear.isEmpty()) {
+    if (bear != null && !bear.isEmpty()) {
       prefix += " (" + bear + ")";
     }
 
-    if(message != null && !message.isEmpty()) {
+    if (message != null && !message.isEmpty()) {
       return prefix + ": " + message;
     }
 
@@ -140,38 +161,49 @@ public class IssueProcessor implements ProjectComponent {
     }
   }
 
-  private void populateRangeMarkers(List<CodeAnalysisIssue> codeAnalysisIssueList)
-      throws FileNotFoundException {
-    this.rangeMarkers = issueManager.getAllRangeMarkers(codeAnalysisIssueList);
-  }
-
-  private Map<Document, Collection<RangeMarker>> getAllRangeMarkers() {
-    return this.rangeMarkers;
-  }
-
-  private Map<Document, Collection<HighlightIssue>> getHighlightIssueCollectionDocumentMap(
+  private Map<Document, Collection<HighlightIssue>> getNewHighlightIssues(
       List<CodeAnalysisIssue> codeAnalysisIssueList)
       throws FileNotFoundException {
     final Map<Document, Collection<HighlightIssue>> highlightIssues = new HashMap<>();
 
     for (CodeAnalysisIssue issue : codeAnalysisIssueList) {
-      final Map<Document, Collection<RangeMarker>> rangeMarkerFromIssue = issueManager
-          .getRangeMarkerFromIssue(issue);
+      final Map<Document, Collection<HighlightIssue>> highlightIssueCollection = getNewHighlightIssues(
+          issue);
 
-      for (Map.Entry<Document, Collection<RangeMarker>> element : rangeMarkerFromIssue.entrySet()) {
+      for (Map.Entry<Document, Collection<HighlightIssue>> element : highlightIssueCollection
+          .entrySet()) {
         final Document document = element.getKey();
-        final Collection<RangeMarker> rangeMarkerCollection = element.getValue();
+        final Collection<HighlightIssue> rangeMarkerCollection = element.getValue();
 
-        for (RangeMarker rangeMarker : rangeMarkerCollection) {
-          final HighlightIssue highlightIssue = getNewHighlightIssue(issue, rangeMarker,
-              document);
-
-          if (!highlightIssues.containsKey(document)) {
-            highlightIssues.put(document, new ArrayList<>());
-          }
-
-          highlightIssues.get(document).add(highlightIssue);
+        if (!highlightIssues.containsKey(document)) {
+          highlightIssues.put(document, new ArrayList<>());
         }
+
+        highlightIssues.get(document).addAll(rangeMarkerCollection);
+      }
+    }
+
+    return highlightIssues;
+  }
+
+  private Map<Document, Collection<HighlightIssue>> getNewHighlightIssues(CodeAnalysisIssue issue)
+      throws FileNotFoundException {
+    final Map<Document, Collection<RangeMarker>> rangeMarkers = issueManager
+        .getRangeMarkerFromIssue(issue);
+    final Map<Document, Collection<HighlightIssue>> highlightIssues = new HashMap<>();
+
+    for (Map.Entry<Document, Collection<RangeMarker>> element : rangeMarkers.entrySet()) {
+      final Document document = element.getKey();
+      final Collection<RangeMarker> rangeMarkerCollection = element.getValue();
+
+      for (RangeMarker rangeMarker : rangeMarkerCollection) {
+        final HighlightIssue highlightIssue = getNewHighlightIssue(issue, rangeMarker, document);
+
+        if (!highlightIssues.containsKey(document)) {
+          highlightIssues.put(document, new ArrayList<>());
+        }
+
+        highlightIssues.get(document).add(highlightIssue);
       }
     }
 

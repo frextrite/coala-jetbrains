@@ -4,15 +4,16 @@ import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.RangeMarker;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import io.coala.jetbrains.utils.AffectedCode;
 import io.coala.jetbrains.utils.CodeAnalysisIssue;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,17 +58,17 @@ public class IssueManager implements ProjectComponent {
       }
 
     }
+
     return rangeMarkers;
   }
 
   public Map<Document, Collection<RangeMarker>> getRangeMarkerFromIssue(CodeAnalysisIssue issue)
       throws FileNotFoundException {
     Map<Document, Collection<RangeMarker>> rangeMarkers = new HashMap<>();
-
+    
     for (AffectedCode affectedCode : issue.getAffectedCodeList()) {
       final String filePath = affectedCode.getFileName();
-      final PsiFile psiFile = getPsiFile(filePath);
-      final Document document = getDocument(psiFile);
+      final Document document = getDocument(filePath);
 
       if (!rangeMarkers.containsKey(document)) {
         rangeMarkers.put(document, new ArrayList<>());
@@ -79,17 +80,19 @@ public class IssueManager implements ProjectComponent {
     return rangeMarkers;
   }
 
-  private Document getDocument(PsiFile psiFile) {
-  }
-
-  private PsiFile getPsiFile(String filePath) throws FileNotFoundException {
-    final VirtualFile vfsFile = VirtualFileManager.getInstance().findFileByUrl(filePath);
+  private Document getDocument(String filePath) throws FileNotFoundException {
+    final File file = new File(filePath);
+    final VirtualFile vfsFile = LocalFileSystem.getInstance().findFileByIoFile(file);
 
     if (vfsFile == null) {
       throw new FileNotFoundException(filePath);
     }
 
-    return PsiManager.getInstance(project).findFile(vfsFile);
+    return FileDocumentManager.getInstance().getDocument(vfsFile);
+  }
+
+  private PsiFile getPsiFile(Document document) {
+    return documentManager.getPsiFile(document);
   }
 
   private RangeMarker createRangeMarker(@NotNull AffectedCode affectedCode,

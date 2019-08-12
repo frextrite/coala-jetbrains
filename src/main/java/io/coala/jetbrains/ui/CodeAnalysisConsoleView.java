@@ -20,6 +20,11 @@ public class CodeAnalysisConsoleView implements ProjectComponent {
     this.consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
   }
 
+  /**
+   * This method returns the {@link ConsoleView} instance we're working with.
+   *
+   * @return instance of {@link ConsoleView}
+   */
   public ConsoleView getConsoleView() {
     return consoleView;
   }
@@ -61,35 +66,35 @@ public class CodeAnalysisConsoleView implements ProjectComponent {
   }
 
   public void clear() {
-    this.consoleView.clear();
+    consoleView.clear();
   }
 
   private void info(String message) {
-    this.consoleView.print(message, ConsoleViewContentType.NORMAL_OUTPUT);
+    consoleView.print(message, ConsoleViewContentType.NORMAL_OUTPUT);
   }
 
   private void warn(String message) {
-    this.consoleView.print(message, ConsoleViewContentType.LOG_WARNING_OUTPUT);
+    consoleView.print(message, ConsoleViewContentType.LOG_WARNING_OUTPUT);
   }
 
   private void error(String message) {
-    this.consoleView.print(message, ConsoleViewContentType.ERROR_OUTPUT);
+    consoleView.print(message, ConsoleViewContentType.ERROR_OUTPUT);
   }
 
   private void debug(String message) {
-    this.consoleView.print(message, getDebugCosoleViewContentType());
+    consoleView.print(message, getDebugConsoleViewContentType());
   }
 
   private void verbose(String message) {
-    this.consoleView.print(message, ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
+    consoleView.print(message, ConsoleViewContentType.LOG_VERBOSE_OUTPUT);
   }
 
-  private ConsoleViewContentType getDebugCosoleViewContentType() {
-    final ConsoleViewContentType errorOutput = ConsoleViewContentType.LOG_DEBUG_OUTPUT;
+  private ConsoleViewContentType getDebugConsoleViewContentType() {
     final Color color = new Color(34, 183, 52);
+    final JBColor debugColor = new JBColor(color, color);
 
-    final TextAttributes errorOutputAttributes = errorOutput.getAttributes();
-    errorOutputAttributes.setForegroundColor(new JBColor(color, color));
-    return new ConsoleViewContentType("CONSOLE_DEBUG_OUTPUT", errorOutputAttributes);
+    final TextAttributes debugOutputAttributes = ConsoleViewContentType.LOG_DEBUG_OUTPUT.getAttributes();
+    debugOutputAttributes.setForegroundColor(debugColor);
+    return new ConsoleViewContentType("CONSOLE_DEBUG_OUTPUT", debugOutputAttributes);
   }
 }

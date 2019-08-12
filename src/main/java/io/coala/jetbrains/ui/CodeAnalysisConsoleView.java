@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.JBColor;
 import io.coala.jetbrains.utils.CodeInspectionSeverity;
 import java.awt.Color;
+import org.jetbrains.annotations.Nullable;
 
 public class CodeAnalysisConsoleView implements ProjectComponent {
 
@@ -37,7 +38,16 @@ public class CodeAnalysisConsoleView implements ProjectComponent {
    * @param message the message to be printed to the console
    * @param severity the severity of the printed message
    */
-  public void print(String message, CodeInspectionSeverity severity) {
+  public void print(@Nullable String message, CodeInspectionSeverity severity) {
+    if (message == null || message.isEmpty()) {
+      return;
+    }
+
+    if (consoleView == null) {
+      error("Error printing message. Cannot initialize console.");
+      return;
+    }
+
     switch (severity) {
       case INFO:
         info(message);
@@ -93,7 +103,8 @@ public class CodeAnalysisConsoleView implements ProjectComponent {
     final Color color = new Color(34, 183, 52);
     final JBColor debugColor = new JBColor(color, color);
 
-    final TextAttributes debugOutputAttributes = ConsoleViewContentType.LOG_DEBUG_OUTPUT.getAttributes();
+    final TextAttributes debugOutputAttributes = ConsoleViewContentType.LOG_DEBUG_OUTPUT
+        .getAttributes();
     debugOutputAttributes.setForegroundColor(debugColor);
     return new ConsoleViewContentType("CONSOLE_DEBUG_OUTPUT", debugOutputAttributes);
   }

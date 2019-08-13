@@ -13,6 +13,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import io.coala.jetbrains.utils.AffectedCode;
 import io.coala.jetbrains.utils.CodeAnalysisIssue;
+import io.coala.jetbrains.utils.SourceRange;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -62,10 +63,31 @@ public class IssueManager implements ProjectComponent {
     return rangeMarkers;
   }
 
+  /**
+   * This method returns {@link RangeMarker} created from a specific issue.
+   *
+   * These range markers are then used for highlighting inside documents.
+   * <p/>
+   * Per document collection of range markers is created by calculating the
+   * start and end offsets associated with the respective document
+   * of the lint problem
+   * <p/>
+   * the size of the returned map is always 1
+   * the size of the corresponding collection of range markers is always 1
+   * <p>
+   * each {@link AffectedCode} has 2 instances of {@link SourceRange}
+   * namely start and end which have the contextual information about the line and column affected
+   *
+   * @param issue the instance which needs to be processed
+   * @return the map with document as the key and collection of range markers as value
+   *     size of the map and the collection is always 1 since every issue object contains information
+   *     about exactly one lint problem associated with a document
+   * @throws FileNotFoundException
+   */
   public Map<Document, Collection<RangeMarker>> getRangeMarkerFromIssue(CodeAnalysisIssue issue)
       throws FileNotFoundException {
     Map<Document, Collection<RangeMarker>> rangeMarkers = new HashMap<>();
-    
+
     for (AffectedCode affectedCode : issue.getAffectedCodeList()) {
       final String filePath = affectedCode.getFileName();
       final Document document = getDocument(filePath);

@@ -34,8 +34,26 @@ public class IssueManager implements ProjectComponent {
     this.project = project;
   }
 
-  public Map<Document, Collection<RangeMarker>> getAllRangeMarkers(
-      List<CodeAnalysisIssue> issueList) throws FileNotFoundException {
+  /**
+   * This method returns all {@link RangeMarker} created from all the issues.
+   *
+   * Extension of {@link #getRangeMarkerFromIssue(CodeAnalysisIssue)}
+   * to return a collection of range markers per document
+   * <p/>
+   * the size of the map may be greater than or equal to 0
+   * <p/>
+   * the size of the collection may be greater than or equal to 0
+   *
+   * @param issueList the list of issues for processing
+   * @return a collection of range markers associated with document
+   * @throws FileNotFoundException
+   */
+  public Map<Document, Collection<RangeMarker>> getRangeMarkers(List<CodeAnalysisIssue> issueList)
+      throws FileNotFoundException {
+    if (issueList == null) {
+      return null;
+    }
+
     final Map<Document, Collection<RangeMarker>> rangeMarkers = new HashMap<>();
 
     for (CodeAnalysisIssue issue : issueList) {

@@ -22,17 +22,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class IssueManager implements ProjectComponent {
 
   private static final Logger LOGGER = Logger.getInstance(IssueManager.class);
 
   private final Project project;
-  private final PsiDocumentManager documentManager;
 
-  public IssueManager(Project project, PsiDocumentManager documentManager) {
+  public IssueManager(Project project) {
     this.project = project;
-    this.documentManager = documentManager;
   }
 
   public Map<Document, Collection<RangeMarker>> getAllRangeMarkers(
@@ -102,7 +101,18 @@ public class IssueManager implements ProjectComponent {
     return rangeMarkers;
   }
 
-  private Document getDocument(String filePath) throws FileNotFoundException {
+  /**
+   * This method returns {@link Document} instance corresponding to the provided source path.
+   *
+   * @param filePath the path of the file as a string
+   * @return the document instance corresponding to the file
+   * @throws FileNotFoundException
+   */
+  public Document getDocument(@Nullable String filePath) throws FileNotFoundException {
+    if (filePath == null) {
+      return null;
+    }
+
     final File file = new File(filePath);
     final VirtualFile vfsFile = LocalFileSystem.getInstance().findFileByIoFile(file);
 
@@ -113,8 +123,18 @@ public class IssueManager implements ProjectComponent {
     return FileDocumentManager.getInstance().getDocument(vfsFile);
   }
 
-  private PsiFile getPsiFile(Document document) {
-    return documentManager.getPsiFile(document);
+  /**
+   * This methods returns {@link PsiFile} instance corresponding to the provided {@link Document}
+   *
+   * @param document the instance whose corresponding psi file needs to be generated
+   * @return the instance of psi file corresponding to the document
+   */
+  public PsiFile getPsiFile(@Nullable Document document) {
+    if (document == null) {
+      return null;
+    }
+
+    return PsiDocumentManager.getInstance(project).getPsiFile(document);
   }
 
   private RangeMarker createRangeMarker(@NotNull AffectedCode affectedCode,

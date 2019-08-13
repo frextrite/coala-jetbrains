@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class IssueProcessor implements ProjectComponent {
 
@@ -34,7 +35,23 @@ public class IssueProcessor implements ProjectComponent {
     this.highlightIssueFactory = highlightIssueFactory;
   }
 
-  public void submit(List<CodeAnalysisIssue> codeAnalysisIssueList) {
+  /**
+   * This method is the main entry-point for highlighting procedure.
+   *
+   * This method processes list of issues and then calls
+   * {@link HighlightService#doPerformHighlighting(Project)} for performing actual highlight
+   * <p/>
+   * {@link CodeAnalysisIssue} list is processed to generate 2 maps containing a
+   * per document collection of {@link HighlightIssue} and {@link HighlightInfo}, using which
+   * per document instances of {@link HighlightIssueWrapper} are created
+   *
+   * @param codeAnalysisIssueList the issue list for processing
+   */
+  public void submit(@Nullable List<CodeAnalysisIssue> codeAnalysisIssueList) {
+    if (codeAnalysisIssueList == null) {
+      return;
+    }
+
     try {
       final Map<Document, Collection<HighlightIssue>> highlightIssues = getNewHighlightIssues(
           codeAnalysisIssueList);

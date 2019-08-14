@@ -94,4 +94,13 @@ public class HighlightService {
         .setHighlightersToEditor(project, document, 0, document.getTextLength(), highlightInfos,
             null, GROUP_ID);
   }
+
+  /**
+   * This method returns the group id of the custom highlighters created.
+   *
+   * @return the group id of the highlighters
+   */
+  public int getGroupId() {
+    return GROUP_ID;
+  }
 }

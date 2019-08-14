@@ -17,6 +17,27 @@ public class HighlightIssue {
   private final Project myProject;
   private final Document document;
 
+  /**
+   * Creates a new instance of {@link HighlightIssue}.
+   *
+   * The instance contains information about the issue:
+   * <p/>
+   * id
+   * origin
+   * message
+   * severity
+   * range marker
+   * project
+   * document
+   *
+   * @param id the id of the issue
+   * @param origin the originating bear that reported the problem
+   * @param message the message shown to the user
+   * @param severity the {@link IssueSeverity} of the issue
+   * @param rangeMarker the offset marking range for highlighting in document
+   * @param myProject the {@link Project} this instance is associated with
+   * @param document the {@link Document} this instance is associated with
+   */
   public HighlightIssue(String id, String origin, String message, IssueSeverity severity,
       RangeMarker rangeMarker, Project myProject, Document document) {
     this.id = id;
@@ -28,6 +49,19 @@ public class HighlightIssue {
     this.document = document;
   }
 
+  /**
+   * This constructor creates an instance with no id value.
+   *
+   * {@link #HighlightIssue(String, String, String, IssueSeverity, RangeMarker, Project, Document)}
+   * for further information
+   *
+   * @param origin the originating bear that reported the problem
+   * @param message the message shown to the user
+   * @param severity the {@link IssueSeverity} of the issue
+   * @param rangeMarker the offset marking range for highlighting in document
+   * @param myProject the {@link Project} this instance is associated with
+   * @param document the {@link Document} this instance is associated with
+   */
   public HighlightIssue(String origin, String message, IssueSeverity severity,
       RangeMarker rangeMarker, Project myProject, Document document) {
     this(null, origin, message, severity, rangeMarker, myProject, document);

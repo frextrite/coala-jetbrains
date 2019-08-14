@@ -19,6 +19,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
+// @TODO: Implement per-file (document) clearing action
+
 public class HighlightService {
 
   private static final Logger LOGGER = Logger.getInstance(HighlightService.class);
@@ -27,6 +29,19 @@ public class HighlightService {
   private TextAttributes rangeMarkerTextAttributes = ServiceManager
       .getService(RangeMarkerTextAttributes.class).getRangeMarkerTextAttributes();
 
+  /**
+   * This method implements clearing of all the custom highlighters created by the plugin.
+   *
+   * Every {@link Document} is iterated and the corresponding {@link MarkupModel}
+   * associated with it is retrieved.
+   * <p/>
+   * And the highlighters that have been created by the plugin,
+   * retrieved by {@link HighlightIssueWrapper#getRangeHighlighters()}
+   * are matched with all the range highlighters present in the markup model,
+   * and finally disposed off.
+   *
+   * @param project the project associated
+   */
   public void clear(Project project) {
     final HighlightIssueFactory highlightIssueFactory = project
         .getComponent(HighlightIssueFactory.class);
@@ -53,6 +68,19 @@ public class HighlightService {
     }
   }
 
+  /**
+   * This method is the actual entry point for performing file level highlights.
+   *
+   * Every {@link Document} is iterated for performing file level highlights.
+   * <p/>
+   * {@link #addRangeHighlighters(Project, Document, HighlightIssueWrapper)} is used for
+   * adding the (pre-created) range markers to the {@link MarkupModel} associated with the Document
+   * <p/>
+   * {@link #setHighlightersToEditor(Project, Document, Collection)} is used for
+   * adding hover-annotations (inspection information) to the Document
+   *
+   * @param project the project associated
+   */
   public void doPerformHighlighting(Project project) {
     final HighlightIssueFactory highlightIssueFactory = project
         .getComponent(HighlightIssueFactory.class);

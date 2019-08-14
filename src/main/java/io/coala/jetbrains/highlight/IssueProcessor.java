@@ -72,14 +72,20 @@ public class IssueProcessor implements ProjectComponent {
     }
   }
 
+  /**
+   * This method wraps around {@link HighlightIssue} and {@link HighlightInfo} in
+   * {@link HighlightIssueWrapper} instances
+   *
+   * @param highlightIssues the per-document collection of {@link HighlightIssue}
+   * @param highlightInfos the per-document collection of {@link HighlightInfo}
+   * @return the per-document instances of {@link HighlightIssueWrapper}
+   */
   private Map<Document, HighlightIssueWrapper> createHighlightIssueWrappers(
       Map<Document, Collection<HighlightIssue>> highlightIssues,
       Map<Document, Collection<HighlightInfo>> highlightInfos) {
     Map<Document, HighlightIssueWrapper> highlightIssueWrapperMap = new HashMap<>();
 
-    for (Map.Entry<Document, Collection<HighlightIssue>> element : highlightIssues.entrySet()) {
-      final Document document = element.getKey();
-
+    for (Document document : highlightIssues.keySet()) {
       final HighlightIssueWrapper highlightIssueWrapper = getNewHighlightIssueWrapper(document,
           highlightIssues.get(document), highlightInfos.get(document));
 

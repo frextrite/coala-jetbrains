@@ -1,8 +1,10 @@
-package io.coala.jetbrains.utils;
+package io.coala.jetbrains.utils.deserializers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.coala.jetbrains.utils.deserializers.CodeAnalysisIssueDeserializer;
+import io.coala.jetbrains.utils.AffectedCode;
+import io.coala.jetbrains.utils.CodeAnalysisIssue;
+import io.coala.jetbrains.utils.SourceRange;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;

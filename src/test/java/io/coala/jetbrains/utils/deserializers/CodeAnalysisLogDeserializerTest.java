@@ -1,8 +1,9 @@
-package io.coala.jetbrains.utils;
+package io.coala.jetbrains.utils.deserializers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.coala.jetbrains.utils.deserializers.CodeAnalysisLogDeserializer;
+import io.coala.jetbrains.utils.CodeAnalysisLog;
+import io.coala.jetbrains.utils.CodeInspectionSeverity;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;

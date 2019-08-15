@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class Notifier {
-  
+
   private static final String title = "coala";
   private static final NotificationGroup NOTIFICATION = new NotificationGroup("coala",
       NotificationDisplayType.BALLOON,
@@ -56,6 +56,10 @@ public final class Notifier {
       @Override
       public void actionPerformed(@NotNull AnActionEvent anActionEvent,
           @NotNull Notification notification) {
+        if (anActionEvent.getProject() == null) {
+          return;
+        }
+
         ApplicationManager.getApplication().invokeLater(() ->
             ToolWindowManager.getInstance(anActionEvent.getProject()).getToolWindow("Event Log")
                 .show(null));

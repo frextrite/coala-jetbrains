@@ -6,12 +6,12 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ProjectSettingsTest extends LightPlatformCodeInsightFixtureTestCase {
+public class ProjectSettingsTest extends BasePlatformTestCase {
 
   private ProjectSettings projectSettings;
 
@@ -39,6 +39,22 @@ public class ProjectSettingsTest extends LightPlatformCodeInsightFixtureTestCase
 
       assertThat(projectSettingsExecutable).isNotNull()
           .isEqualTo(Paths.get("C:\\Windows\\System32\\where.exe").toAbsolutePath());
+    }
+  }
+
+  public void testAutomaticDetectionAndSettingOfExecutableIfNotExists()
+      throws InterruptedException, ExecutionException, IOException {
+    Path projectSettingsExecutable;
+
+    if (SystemInfo.isUnix) {
+      projectSettingsExecutable = projectSettings.determineAndSetExecutable("does_not_exist");
+
+      assertThat(projectSettingsExecutable).isNull();
+    }
+    if (SystemInfo.isWindows) {
+      projectSettingsExecutable = projectSettings.determineAndSetExecutable("does_not_exist");
+
+      assertThat(projectSettingsExecutable).isNull();
     }
   }
 }

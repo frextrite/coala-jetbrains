@@ -16,7 +16,7 @@
                             serviceImplementation="io.coala.jetbrains.utils.RangeMarkerTextAttributes" />
         <applicationService serviceInterface="io.coala.jetbrains.highlight.HighlightService"
                             serviceImplementation="io.coala.jetbrains.highlight.HighlightService" />
-      
+
         <toolWindow id="coala"
                     icon="/images/coala-13x13.png"
                     canCloseContents="false"
@@ -28,7 +28,6 @@
         <!-- groups -->
         <group id="CodeAnalysis.AnalyzeMenu"
                text="coala">
-            <add-to-group group-id="AnalyzeMenu" anchor="last"/>
             <separator/>
         </group>
 

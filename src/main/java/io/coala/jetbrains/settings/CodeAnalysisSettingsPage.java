@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nls.Capitalization;
 import org.jetbrains.annotations.Nullable;
 
-public class ApplicationSettings implements Configurable {
+public class CodeAnalysisSettingsPage implements Configurable {
 
   private final Project project;
 
@@ -22,7 +22,7 @@ public class ApplicationSettings implements Configurable {
   private JLabel coalaLocationLabel;
   private JPanel panel;
 
-  public ApplicationSettings(Project project) {
+  public CodeAnalysisSettingsPage(Project project) {
     this.project = project;
   }
 

@@ -16,6 +16,10 @@
                             serviceImplementation="io.coala.jetbrains.utils.RangeMarkerTextAttributes" />
         <applicationService serviceInterface="io.coala.jetbrains.highlight.HighlightService"
                             serviceImplementation="io.coala.jetbrains.highlight.HighlightService" />
+
+        <projectService serviceInterface="io.coala.jetbrains.settings.CodeAnalysisSettingsPersistent"
+                        serviceImplementation="io.coala.jetbrains.settings.CodeAnalysisSettingsPersistent" />
+
         <projectConfigurable instance="io.coala.jetbrains.settings.CodeAnalysisSettingsPage" />
 
         <toolWindow id="coala"

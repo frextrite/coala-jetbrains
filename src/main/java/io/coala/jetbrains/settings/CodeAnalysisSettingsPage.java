@@ -15,6 +15,7 @@ import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ui.SwingHelper;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -109,6 +110,7 @@ public class CodeAnalysisSettingsPage implements Configurable {
     textFieldWithHistory.setHistorySize(-1);
     textFieldWithHistory.setMinimumAndPreferredWidth(-1);
 
+    textFieldWithHistory.setTextAndAddToHistory(getPersistentSettings().coalaLocation);
     SwingHelper.installFileCompletionAndBrowseDialog(project, coalaLocation,
         "Select coala Script Location",
         FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
@@ -116,8 +118,8 @@ public class CodeAnalysisSettingsPage implements Configurable {
 
   @Override
   public boolean isModified() {
-    // @TODO: Implement logic
-    return true;
+    return !coalaLocation.getChildComponent().getText()
+        .equals(getPersistentSettings().coalaLocation);
   }
 
   @Override
@@ -135,10 +137,17 @@ public class CodeAnalysisSettingsPage implements Configurable {
 
   private void updateScriptPath(String location) {
     final ProjectSettings settings = getProjectSettings();
+    final CodeAnalysisSettingsPersistent persistentSettings = getPersistentSettings();
+
+    persistentSettings.coalaLocation = location;
     settings.setExecutable(location);
   }
 
   private ProjectSettings getProjectSettings() {
     return project.getComponent(ProjectSettings.class);
+  }
+
+  private CodeAnalysisSettingsPersistent getPersistentSettings() {
+    return CodeAnalysisSettingsPersistent.getInstance(project);
   }
 }

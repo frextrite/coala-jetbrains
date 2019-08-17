@@ -6,8 +6,12 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.ui.popup.Balloon.Position;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.TextFieldWithHistory;
 import com.intellij.ui.TextFieldWithHistoryWithBrowseButton;
+import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ui.SwingHelper;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -60,17 +64,44 @@ public class CodeAnalysisSettingsPage implements Configurable {
 
   private void initializeAutomaticExecRetrievalButton() {
     automaticExecRetrievalButton.addActionListener(e -> {
+      final long timeout = 3000;
+
       try {
         final Path coalaPath = getProjectSettings().determineAndSetExecutable("coala");
 
         if (coalaPath != null) {
           final String coalaLocationString = coalaPath.toString();
           this.coalaLocation.setTextAndAddToHistory(coalaLocationString);
+          showSuccessBalloon("Found coala at " + coalaLocationString, timeout,
+              coalaLocation);
+        } else {
+          showErrorBalloon("coala does not exist in PATH.\n"
+              + "Please select coala location manually.", timeout, automaticExecRetrievalButton);
         }
       } catch (ExecutionException | InterruptedException | IOException ex) {
+        showErrorBalloon("Failed to automatically detect coala.\n"
+                + "Please select coala location manually.", timeout,
+            automaticExecRetrievalButton);
         LOGGER.error(ex);
       }
     });
+  }
+
+  private void showSuccessBalloon(String message, long timeout, JComponent component) {
+    showBalloon(message, MessageType.INFO, timeout, component);
+  }
+
+  private void showErrorBalloon(String message, long timeout, JComponent component) {
+    showBalloon(message, MessageType.ERROR, timeout, component);
+  }
+
+  private void showBalloon(String message, MessageType messageType, long timeout,
+      JComponent component) {
+    JBPopupFactory.getInstance()
+        .createHtmlTextBalloonBuilder(message, messageType, null)
+        .setFadeoutTime(timeout)
+        .createBalloon()
+        .show(RelativePoint.getSouthOf(component), Position.below);
   }
 
   private void initializeTextFieldWithHistoryWithBrowseButton() {

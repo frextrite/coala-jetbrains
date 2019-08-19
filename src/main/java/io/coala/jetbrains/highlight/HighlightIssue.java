@@ -20,6 +20,7 @@ public class HighlightIssue {
   /**
    * Creates a new instance of {@link HighlightIssue}.
    *
+   * <p/>
    * The instance contains information about the issue:
    * <p/>
    * id
@@ -34,9 +35,9 @@ public class HighlightIssue {
    * @param origin the originating bear that reported the problem
    * @param message the message shown to the user
    * @param severity the {@link IssueSeverity} of the issue
-   * @param rangeMarker the offset marking range for highlighting in document
-   * @param myProject the {@link Project} this instance is associated with
-   * @param document the {@link Document} this instance is associated with
+   * @param rangeMarker the offset range for highlighting in document
+   * @param myProject the {@link Project} associated with the current instance
+   * @param document the {@link Document} associated with the current instance
    */
   public HighlightIssue(String id, String origin, String message, IssueSeverity severity,
       RangeMarker rangeMarker, Project myProject, Document document) {
@@ -50,10 +51,7 @@ public class HighlightIssue {
   }
 
   /**
-   * This constructor creates an instance with no id value.
-   *
-   * {@link #HighlightIssue(String, String, String, IssueSeverity, RangeMarker, Project, Document)}
-   * for further information
+   * Creates an instance with no id value.
    *
    * @param origin the originating bear that reported the problem
    * @param message the message shown to the user
@@ -61,6 +59,7 @@ public class HighlightIssue {
    * @param rangeMarker the offset marking range for highlighting in document
    * @param myProject the {@link Project} this instance is associated with
    * @param document the {@link Document} this instance is associated with
+   * @see #HighlightIssue(String, String, String, IssueSeverity, RangeMarker, Project, Document)
    */
   public HighlightIssue(String origin, String message, IssueSeverity severity,
       RangeMarker rangeMarker, Project myProject, Document document) {

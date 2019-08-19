@@ -18,6 +18,20 @@ public class HighlightIssueWrapper {
   private final Collection<HighlightInfo> highlightInfos;
   private final Collection<RangeHighlighter> rangeHighlighters;
 
+  /**
+   * This class holds information about {@link HighlightIssue}, {@link HighlightInfo}
+   * and {@link RangeHighlighter}.
+   *
+   * <p/>
+   * {@link RangeHighlighter} instances are creating during actual highlight process and
+   * added to the instance.
+   *
+   * @param project the {@link Project} associated with the file
+   * @param document the {@link Document} associated with the file
+   * @param psiFile the {@link PsiFile} associated with the file
+   * @param highlightIssues the collection associated with current document
+   * @param highlightInfos the collection associated with current document
+   */
   public HighlightIssueWrapper(Project project,
       Document document, PsiFile psiFile,
       Collection<HighlightIssue> highlightIssues,
@@ -58,6 +72,11 @@ public class HighlightIssueWrapper {
     highlightIssues.add(highlightIssue);
   }
 
+  /**
+   * Adds a new {@link RangeHighlighter} to the existing collection.
+   *
+   * @param rangeHighlighter instance to be added to the existing collection
+   */
   public void addRangeHighlighter(RangeHighlighter rangeHighlighter) {
     rangeHighlighters.add(rangeHighlighter);
   }
@@ -78,6 +97,14 @@ public class HighlightIssueWrapper {
     highlightInfos.addAll(highlightInfoCollection);
   }
 
+  /**
+   * Method to remove all {@link HighlightInfo} and {@link RangeHighlighter} created.
+   *
+   * <p/>
+   * Calls {@link RangeHighlighter#dispose()} to dispose off created range highlighters
+   * <p/>
+   * Clears both the collections thereafter.
+   */
   public void clear() {
     for (HighlightInfo highlightInfo : highlightInfos) {
       if (highlightInfo.getHighlighter() == null) {

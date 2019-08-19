@@ -37,6 +37,7 @@ public class IssueManager implements ProjectComponent {
   /**
    * This method returns all {@link RangeMarker} created from all the issues.
    *
+   * <p/>
    * Extension of {@link #getRangeMarkerFromIssue(CodeAnalysisIssue)}
    * to return a collection of range markers per document
    * <p/>
@@ -83,6 +84,7 @@ public class IssueManager implements ProjectComponent {
   /**
    * This method returns {@link RangeMarker} created from a specific issue.
    *
+   * <p/>
    * These range markers are then used for highlighting inside documents.
    * <p/>
    * Per document collection of range markers is created by calculating the
@@ -91,7 +93,7 @@ public class IssueManager implements ProjectComponent {
    * <p/>
    * the size of the returned map is always 1
    * the size of the corresponding collection of range markers is always 1
-   * <p>
+   * <p/>
    * each {@link AffectedCode} has 2 instances of {@link SourceRange}
    * namely start and end which have the contextual information about the line and column affected
    *
@@ -142,7 +144,7 @@ public class IssueManager implements ProjectComponent {
   }
 
   /**
-   * This methods returns {@link PsiFile} instance corresponding to the provided {@link Document}
+   * This methods returns {@link PsiFile} instance corresponding to the provided {@link Document}.
    *
    * @param document the instance whose corresponding psi file needs to be generated
    * @return the instance of psi file corresponding to the document

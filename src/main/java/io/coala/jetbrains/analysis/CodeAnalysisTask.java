@@ -14,6 +14,7 @@ import io.coala.jetbrains.utils.CodeAnalysisLogPrinter;
 import io.coala.jetbrains.utils.Notifier;
 import io.coala.jetbrains.utils.deserializers.CodeAnalysisIssueDeserializer;
 import io.coala.jetbrains.utils.deserializers.CodeAnalysisLogDeserializer;
+import java.io.FileNotFoundException;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +45,7 @@ public class CodeAnalysisTask extends Task.Backgroundable {
     ProcessOutput analysisOutput = null;
     try {
       analysisOutput = codeAnalysisRunner.analyze();
-    } catch (ExecutionException e) {
+    } catch (ExecutionException | FileNotFoundException e) {
       Notifier.showErrorNotification("Failed to run coala. Make sure the supplied path is "
           + "correct and .coafile exists in project root.", e);
       e.printStackTrace();

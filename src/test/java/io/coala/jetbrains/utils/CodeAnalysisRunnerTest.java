@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import io.coala.jetbrains.analysis.CodeAnalysisRunner;
 import io.coala.jetbrains.settings.ProjectSettings;
 import io.coala.jetbrains.ui.CodeAnalysisConsoleView;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -31,12 +32,13 @@ public class CodeAnalysisRunnerTest {
   private static GeneralCommandLine cmd;
 
   @BeforeClass
-  public static void loadGeneralCommandLine() {
+  public static void loadGeneralCommandLine() throws FileNotFoundException {
     when(projectSettings.getCwd()).thenReturn(cwd);
     when(projectSettings.getExecutable()).thenReturn(executable);
     when(projectSettings.getSections()).thenReturn(sections);
 
-    final CodeAnalysisRunner codeAnalysisRunner = new CodeAnalysisRunner(project, projectSettings, codeAnalysisConsoleView);
+    final CodeAnalysisRunner codeAnalysisRunner = new CodeAnalysisRunner(project, projectSettings,
+        codeAnalysisConsoleView);
     cmd = codeAnalysisRunner.getNewGeneralCommandLine();
   }
 

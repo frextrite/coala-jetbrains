@@ -26,6 +26,7 @@ public class ProjectSettings implements ProjectComponent {
   private final String pathToWhereExecutable = "C:\\Windows\\System32\\where.exe";
 
   private final Project project;
+  private final CodeAnalysisSettingsPersistent codeAnalysisSettingsPersistent;
   private final ProgressManager progressManager;
   private long timeOutInSeconds;
   private String cwd;
@@ -36,12 +37,26 @@ public class ProjectSettings implements ProjectComponent {
   public ProjectSettings(Project project, ProgressManager progressManager) {
     this.project = project;
     this.cwd = project.getBasePath();
-    this.executable = null;
     this.sections = new ArrayList<>();
     /* TODO: add timeout option in settings panel */
     this.timeOutInSeconds = 120;
     this.progressManager = progressManager;
-    runAutomaticExecutableRetrieval();
+    this.codeAnalysisSettingsPersistent = CodeAnalysisSettingsPersistent
+        .getInstance(project);
+    updateExecutable();
+    updateDefaultSection();
+  }
+
+  private void updateDefaultSection() {
+    sections.add("jetbrains");
+  }
+
+  private void updateExecutable() {
+    if (codeAnalysisSettingsPersistent == null) {
+      executable = null;
+    } else {
+      executable = codeAnalysisSettingsPersistent.coalaLocation;
+    }
   }
 
   public Project getProject() {

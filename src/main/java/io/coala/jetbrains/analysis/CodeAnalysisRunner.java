@@ -16,6 +16,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import io.coala.jetbrains.settings.ProjectSettings;
 import io.coala.jetbrains.ui.CodeAnalysisConsoleView;
 import io.coala.jetbrains.utils.CodeInspectionSeverity;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +41,7 @@ public class CodeAnalysisRunner implements ProjectComponent {
    *
    * @return the instance with all the required information about the run
    */
-  public ProcessOutput analyze() throws ExecutionException {
+  public ProcessOutput analyze() throws ExecutionException, FileNotFoundException {
     final GeneralCommandLine commandLine = getNewGeneralCommandLine();
     final String commandLineString = commandLine.getCommandLineString();
     final Process process = commandLine.createProcess();
@@ -77,10 +78,14 @@ public class CodeAnalysisRunner implements ProjectComponent {
    *
    * @return an instance of GeneralCommandLine
    */
-  public GeneralCommandLine getNewGeneralCommandLine() {
+  public GeneralCommandLine getNewGeneralCommandLine() throws FileNotFoundException {
     final String cwd = projectSettings.getCwd();
     final String executable = projectSettings.getExecutable();
     final List<String> sections = projectSettings.getSections();
+
+    if (executable == null) {
+      throw new FileNotFoundException(null);
+    }
 
     final GeneralCommandLine commandLine = new GeneralCommandLine();
     commandLine.setWorkDirectory(cwd);

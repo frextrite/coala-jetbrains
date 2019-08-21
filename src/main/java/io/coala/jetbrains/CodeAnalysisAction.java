@@ -33,6 +33,6 @@ public class CodeAnalysisAction extends AnAction {
     projectSettings.setExecutable("/path/to/coala");
     projectSettings.addSectionToFilter("jetbrains");
 
-    executor.runTask(codeAnalysisTask);
+    executor.saveAllDocumentsAndRunTask(codeAnalysisTask);
   }
 }

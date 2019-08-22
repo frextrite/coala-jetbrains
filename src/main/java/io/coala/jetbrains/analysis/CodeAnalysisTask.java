@@ -73,6 +73,7 @@ public class CodeAnalysisTask extends Task.Backgroundable {
 
     final List<CodeAnalysisIssue> codeAnalysisIssues = CodeAnalysisIssueDeserializer
         .getAllCodeAnalysisIssues(jsonResults);
+    LOGGER.info("NUMBER OF ERRORS: " + codeAnalysisIssues.size());
     final IssueProcessor issueProcessor = myProject.getComponent(IssueProcessor.class);
     ApplicationManager.getApplication()
         .runReadAction(() -> issueProcessor.submit(codeAnalysisIssues));

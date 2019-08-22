@@ -1,0 +1,4 @@
+[python]
+files=check.py
+bears=PEP8Bear, SpaceConsistencyBear, PycodestyleBear, PyUnusedCodeBear
+use_spaces=True

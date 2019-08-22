@@ -12,6 +12,7 @@ import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import io.coala.jetbrains.settings.ProjectSettings;
 import io.coala.jetbrains.ui.CodeAnalysisConsoleView;
@@ -50,7 +51,7 @@ public class CodeAnalysisRunner implements ProjectComponent {
 
     showToolWindow();
 
-    final String logRunCommand = "Running coala command \"" + commandLineString + "\"\n";
+    final String logRunCommand = "Running coala command \"" + commandLineString + "\" in " + project.getBasePath() + "\n";
     codeAnalysisConsoleView.clear();
     codeAnalysisConsoleView
         .print(logRunCommand, CodeInspectionSeverity.VERBOSE);
@@ -166,6 +167,12 @@ public class CodeAnalysisRunner implements ProjectComponent {
 
   private void showToolWindow() {
     ApplicationManager.getApplication().invokeLater(
-        () -> ToolWindowManager.getInstance(project).getToolWindow("coala").show(null));
+        () -> {
+          final ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow("coala");
+          if (toolWindow == null) {
+            return;
+          }
+          toolWindow.show(null);
+        });
   }
 }

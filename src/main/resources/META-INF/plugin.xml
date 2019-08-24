@@ -4,7 +4,6 @@
     <vendor url="https://coala.io/">coala</vendor>
 
     <description><![CDATA[
-    <h1>coala: Language Independent Code Analysis</h1>
     coala provides a unified interface for linting and fixing all your code, regardless of the programming languages you use.
     ]]></description>
 

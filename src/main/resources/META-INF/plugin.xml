@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>io.coala.jetbrains.code-analysis</id>
+    <id>io.coala.jetbrains</id>
     <name>coala Code Analysis</name>
     <vendor url="https://coala.io/">coala</vendor>
 
@@ -7,6 +7,8 @@
     <h1>coala: Language Independent Code Analysis</h1>
     coala provides a unified interface for linting and fixing all your code, regardless of the programming languages you use.
     ]]></description>
+
+    <change-notes><!-- --></change-notes>
 
     <!-- to enable plugin in all products -->
     <depends>com.intellij.modules.lang</depends>
@@ -40,7 +42,7 @@
         <action id="io.coala.jetbrains.CodeAnalysisAction"
                 class="io.coala.jetbrains.CodeAnalysisAction"
                 text="Analyze with coala"
-                description="Run coala on current file">
+                description="Run coala on current project">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
             <add-to-group group-id="CodeAnalysis.AnalyzeMenu" anchor="last"/>
         </action>

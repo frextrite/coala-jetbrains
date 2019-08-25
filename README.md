@@ -6,9 +6,12 @@ An IntelliJ plugin for [coala](https://coala.io). coala provides a unified inter
 ## Steps to run
 1. Install `coala-jetbrains` plugin from official Jetbrains Plugin repository
 2. Go to `File > Settings > coala` and set coala executable location
-3. Create a coala configuration file (`.coafile`) and set the value of `tag` parameter to `jetbrains` for the sections you wish to analyze with the plugin
+3. Create a coala configuration file (`.coafile`) in project's root
 4. Click on `Analyze with coala` menu-entry under `Analyze` menu to run coala. Alternatively, `right-click` in an opened editor and click on `Analyze with coala`
 
+### Things to note while creating `.coafile`
+* Sections with tag `jetbrains` will be run by the plugin
+* Make sure the value of `files` parameter contains files that are a part of the current project, failure to do so may result in unexpected behaviour
 
 ## Filing issues
 Please use our [issue tracker](https://github.com/frextrite/coala-jetbrains/issues) for reporting coala Jetbrains issues.

@@ -1,12 +1,12 @@
 package io.coala.jetbrains.utils.deserializers;
 
-import gherkin.deps.com.google.gson.GsonBuilder;
-import gherkin.deps.com.google.gson.JsonArray;
-import gherkin.deps.com.google.gson.JsonDeserializationContext;
-import gherkin.deps.com.google.gson.JsonDeserializer;
-import gherkin.deps.com.google.gson.JsonElement;
-import gherkin.deps.com.google.gson.JsonObject;
-import gherkin.deps.com.google.gson.JsonParseException;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import io.coala.jetbrains.utils.AffectedCode;
 import io.coala.jetbrains.utils.CodeAnalysisIssue;
 import java.lang.reflect.Type;

@@ -4,7 +4,7 @@
 An IntelliJ plugin for [coala](https://coala.io). coala provides a unified interface for linting and fixing code with a single configuration file, regardless of the programming languages used. The same power of coala now in IntelliJ IDEs.
 
 ## Steps to run
-1. Install `coala-jetbrains` plugin from official Jetbrains Plugin repository
+1. Install `coala Code Analysis` plugin from official Jetbrains Plugin repository
 2. Go to `File > Settings > coala` and set coala executable location
 3. Create a coala configuration file (`.coafile`) in project's root
 4. Click on `Analyze with coala` menu-entry under `Analyze` menu to run coala. Alternatively, `right-click` in an opened editor and click on `Analyze with coala`

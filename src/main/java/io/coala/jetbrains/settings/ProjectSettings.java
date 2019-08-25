@@ -10,13 +10,14 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.io.IOUtils;
+import java.util.stream.Collectors;
 
 public class ProjectSettings implements ProjectComponent {
 
@@ -130,8 +131,8 @@ public class ProjectSettings implements ProjectComponent {
     process.waitFor();
 
     if (process.exitValue() == 0) {
-      String parsedExecutable = IOUtils
-          .toString(process.getInputStream(), Charset.defaultCharset()).trim();
+      String parsedExecutable = new BufferedReader(new InputStreamReader(process.getInputStream()))
+          .lines().collect(Collectors.joining("\n"));
       return Paths.get(parsedExecutable);
     }
 

@@ -45,3 +45,6 @@ gradle-app.setting
 # Extra files
 **/main.iml
 **/test.iml
+
+# include Gradle run configurations
+!.idea/runConfigurations/
